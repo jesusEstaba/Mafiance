@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="icon" href="https://static.thenounproject.com/png/40328-200.png">
+    <style type="text/css">
+        .blanco {
+            color: white;
+        }
+
+        .negro {
+            background-color: #1f1e1e;
+        }
+
+        .magenta {
+            color: #8c509a;
+        }
+
+        .fmagenta {
+            background-color: #8c509a;
+        }
+    </style>
+    <title>Registrarse | Mafiance</title>
+</head>
+
+<body>
+    <section class="negro">
+        {% if mensaje %}
+        <div class="container py-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert">
+                        {{mensaje}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <form class="container blanco" action="/login/admins">
+            <div class="row">
+                <div class="col-6 py-5">
+                    <a href="/login" class="text-decoration-none">
+                        <h3>⬅</h3>
+                    </a>
+                </div>
+                <div class="col-6 py-5 text-end">
+                    <a href="/" type="button" class="btn-close btn-close-white" aria-label="Close"></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col py-3 magenta">
+                    <h1>Crear cuenta</h1>
+                </div>
+                <label for="exampleFormControlInput1" class="form-label">
+                    <h6>Email</h6>
+                </label>
+                <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="" name="email">
+                <label for="exampleFormControlInput1" class="form-label pt-3">
+                    <h6>Contraseña</h6>
+                </label>
+                <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="" name="password">
+                <label for="exampleFormControlInput1" class="form-label pt-3">
+                    <h6>ID de Referencia (Opcional)</h6>
+                </label>
+                <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="" name="id_refer">
+                <div class="form-check pt-3">
+                    <input class="form-check-input" type="radio" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        <small class="magenta">He leido y acepto los Términos de blah blah blah y la Política sin
+                            privacidad de Mafiance.</small>
+                    </label>
+                </div>
+                <div class="col py-3 text-center">
+                    <a href="#" type="button" class="btn btn-outline-light btn-lg">¡Crear cuenta de una vez!</a>
+                </div>
+                <hr>
+                <div class="col text-center pt-3 pb-5">
+                    <h6>¿No quieres una cuenta personal? <a href="#" class="text-decoration-none magenta">Registrarse
+                            para una cuenta de entidad... Rompebolas.</h6></a>
+
+                </div>
+            </div>
+        </form>
+    </section>
+</body>
+
+</html>

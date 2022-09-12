@@ -28,3 +28,8 @@ def login_view():
 def loginpass_view():
     mensaje = request.args.get('mensaje')
     return render_template("loginpass.html", mensaje=mensaje)
+
+
+@app.route("/signin")
+def signin_view():
+    return render_template("signin.html")
