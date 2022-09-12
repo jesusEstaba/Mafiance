@@ -18,7 +18,13 @@ def home_view():
     return render_template("home.html", id=session.get('id'))
 
 
-@ app.route("/login")
+@app.route("/login")
 def login_view():
     mensaje = request.args.get('mensaje')
     return render_template("login.html", mensaje=mensaje)
+
+
+@app.route("/loginpass")
+def loginpass_view():
+    mensaje = request.args.get('mensaje')
+    return render_template("loginpass.html", mensaje=mensaje)
