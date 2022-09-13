@@ -30,18 +30,18 @@
 
 <body>
     <section class="negro">
-        {% if mensaje %}
+        {% if mensaje3 %}
         <div class="container py-2">
             <div class="row">
                 <div class="col-12">
                     <div class="alert alert-danger" role="alert">
-                        {{mensaje}}
+                        {{mensaje3}}
                     </div>
                 </div>
             </div>
         </div>
         {% endif %}
-        <form class="container blanco" action="/login/admins">
+        <form class="container blanco" action="/signin/new_user">
             <div class="row">
                 <div class="col-6 py-5">
                     <a href="/login" class="text-decoration-none">
@@ -65,9 +65,9 @@
                 </label>
                 <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="" name="password">
                 <label for="exampleFormControlInput1" class="form-label pt-3">
-                    <h6>ID de Referencia (Opcional)</h6>
+                    <h6>Nombre de Usuario</h6>
                 </label>
-                <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="" name="id_refer">
+                <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="" name="user">
                 <div class="form-check pt-3">
                     <input class="form-check-input" type="radio" value="" id="flexCheckDefault">
                     <label class="form-check-label" for="flexCheckDefault">
@@ -76,7 +76,7 @@
                     </label>
                 </div>
                 <div class="col py-3 text-center">
-                    <a href="#" type="button" class="btn btn-outline-light btn-lg">¡Crear cuenta de una vez!</a>
+                    <button type="submit" class="btn btn-outline-light btn-lg">¡Crear cuenta de una vez!</button>
                 </div>
                 <hr>
                 <div class="col text-center pt-3 pb-5">

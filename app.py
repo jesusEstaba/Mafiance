@@ -20,16 +20,81 @@ def home_view():
 
 @app.route("/login")
 def login_view():
-    mensaje = request.args.get('mensaje')
-    return render_template("login.html", mensaje=mensaje)
+    mensaje1 = request.args.get('mensaje1')
+    return render_template("login.html", mensaje1=mensaje1)
 
 
 @app.route("/loginpass")
 def loginpass_view():
-    mensaje = request.args.get('mensaje')
-    return render_template("loginpass.html", mensaje=mensaje)
+    mensaje2 = request.args.get('mensaje2')
+    return render_template("loginpass.html", mensaje2=mensaje2)
+
+
+@app.route("/login/admins")
+def login_admins():
+    adminEmail = request.args.get('email')
+    if adminEmail == "":
+        return redirect('/login?mensaje1=Ingresa el Email')
+
+    adminDocument = db.admins.find_one({'email': adminEmail})
+
+    if not adminDocument:
+        return redirect('/login?mensaje1=El usuario no existe')
+
+    session['admin'] = str(adminDocument['_id'])
+    return redirect('/loginpass')
+
+
+@app.route("/loginpass/admins")
+def loginpass_admins():
+
+    adminPassword = request.args.get('password')
+
+    if adminPassword == "":
+        return redirect('/loginpass?mensaje2=Ingresa la contraseña')
+
+    adminDocument = db.admins.find_one({'password': adminPassword})
+
+    if adminDocument['password'] != adminPassword:
+        return redirect('/loginpass?mensaje2=La contraseña no es válida')
+
+    return redirect('/')
 
 
 @app.route("/signin")
 def signin_view():
-    return render_template("signin.html")
+    mensaje3 = request.args.get('mensaje3')
+    return render_template("signin.html", mensaje3=mensaje3)
+
+
+@app.route("/signin/new_user")
+def signin_user():
+    newEmail = request.args.get('email')
+    newPassword = request.args.get('password')
+    new_user_name = request.args.get('user')
+
+    if newEmail == "":
+        return redirect('/signin?mensaje3=Ingresa el Email')
+
+    if newPassword == "":
+        return redirect('/signin?mensaje3=Ingresa una Contraseña')
+
+    if new_user_name == "":
+        return redirect('/signin?mensaje3=Ingresa un nombre de Usuario')
+
+    emailSplitted = newEmail.split('@')
+
+    if len(emailSplitted) != 2 or emailSplitted[1] != 'gmail.com':
+
+        return redirect('/signin?mensaje3=la dirección de correo no es válida, debe contener @gmail.com ó @hotmail.com')
+
+    user = session.get('id')
+    newDocument = {
+        'email': newEmail,
+        'password': newPassword,
+        'user': new_user_name
+    }
+    newDocument['user_id'] = user
+    db.users.insert_one(newDocument)  # creamos documentos en la base de datos.
+
+    return redirect('/')
