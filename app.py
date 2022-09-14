@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import os
 import random
+
 app = Flask(__name__)
 app.secret_key = ".."
 uri = os.environ.get('MONGO_DB_URI', "mongodb://127.0.0.1")
@@ -53,12 +54,13 @@ def loginpass_admins():
     if adminPassword == "":
         return redirect('/loginpass?mensaje2=Ingresa la contraseña')
 
+    # Arreglar que entienda 1 clave por usuario.
     adminDocument = db.admins.find_one({'password': adminPassword})
 
     if adminDocument['password'] != adminPassword:
         return redirect('/loginpass?mensaje2=La contraseña no es válida')
 
-    return redirect('/')
+    return redirect('/index')
 
 
 @app.route("/signin")
@@ -95,6 +97,17 @@ def signin_user():
         'user': new_user_name
     }
     newDocument['user_id'] = user
-    db.users.insert_one(newDocument)  # creamos documentos en la base de datos.
+    db.users.insert_one(newDocument)  # Creamos documentos en la base de datos.
 
-    return redirect('/')
+    return redirect('/finished')
+    # Hacer que al iniciar sesión identifique el nuevo usuario.
+
+
+@app.route("/finished")
+def registration_view():
+    return render_template("finished.html")
+
+
+@app.route("/index")
+def index_view():
+    return render_template("index.html")
