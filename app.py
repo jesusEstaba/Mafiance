@@ -111,3 +111,13 @@ def registration_view():
 @app.route("/index")
 def index_view():
     return render_template("index.html")
+
+
+@app.route("/profile")
+def profile_view():
+    return render_template("profile.html")
+
+
+@app.route("/p2p")
+def p2p_view():
+    return render_template("p2p.html")
