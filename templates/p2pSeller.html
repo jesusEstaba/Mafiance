@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="icon" href="https://static.thenounproject.com/png/40328-200.png">
+    <style type="text/css">
+        .blanco {
+            color: white;
+        }
+
+        .negro {
+            background-color: #1f1e1e;
+        }
+
+        .gris {
+            background-color: #393939;
+        }
+
+        .magenta {
+            color: #b96acb;
+        }
+
+        .fmagenta {
+            background-color: #8c509a;
+        }
+
+        .cuadrados {
+            outline: 1px solid #d0d0d0;
+        }
+
+        .vertical-red {
+            width: 3px;
+            height: 20px;
+            background-color: red;
+            border-radius: 80px;
+        }
+
+        .vertical-blue {
+            width: 3px;
+            height: 20px;
+            background-color: rgb(76, 151, 255);
+            border-radius: 80px;
+        }
+
+        .vertical-green {
+            width: 3px;
+            height: 20px;
+            background-color: rgb(87, 255, 87);
+            border-radius: 80px;
+        }
+    </style>
+    <title>Comercio P2P | Mafiance</title>
+</head>
+
+<body>
+    <section class="negro">
+        <div class="container fmagenta" style="border-radius: 20px;">
+            <div class="row py-3">
+                <div class="col-4">
+                    <a href="/index">
+                        <img width="50" height="50" src="https://cdn.icon-icons.com/icons2/1709/PNG/512/back_112351.png"
+                            alt="">
+                    </a>
+                </div>
+                <div class="col-4 text-center">
+                    <div class="dropdown-center">
+                        <button class="btn btn-secondary dropdown-toggle btn-lg" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            P2P
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">P2P</a></li>
+                            <li><a class="dropdown-item" href="#">Comercio por bloques</a></li>
+                            <li><a class="dropdown-item" href="#">Rápido</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!--Recordar que debo hacer que el nombre de divisa cambie al cambiar la otra vista-->
+                <div class="col-2 text-end">
+                    <h3>ARS</h3>
+                </div>
+                <div class="col-1 text-end px-4">
+                    <img widht="50" height="50"
+                        src="https://cdn.icon-icons.com/icons2/3263/PNG/512/exchange_icon_206963.png" alt="">
+                </div>
+                <div class="col-1">
+                    <img width="50" height="50"
+                        src="https://cdn.iconscout.com/icon/free/png-512/options-1767904-1502157.png" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="container gris cuadrados blanco" style="border-radius: 20px;">
+            <div class="row py-3 my-3">
+                <div class="col-5 pt-4">
+                    <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
+                        <a href="/p2pBuyer" type="radio" class="btn-check" name="btnradio" id="btnradio1"
+                            autocomplete="off" checked></a>
+                        <label class="btn btn-outline-light" for="btnradio1">Comprar</label>
+
+                        <a href="/p2pSeller" type="radio" class="btn-check" name="btnradio" id="btnradio2"
+                            autocomplete="off"></a>
+                        <label class="btn btn-outline-light" for="btnradio2">Vender</label>
+                    </div>
+                </div>
+                <div class="col-4 px-5">
+                    <img width="100" height="100"
+                        src="https://cdn.icon-icons.com/icons2/2070/PNG/512/raccoon_icon_125936.png" alt="">
+                </div>
+                <div class="col-2 text-end px-4 pt-4">
+                    <button type="button" class="btn btn-outline-light position-relative">
+                        <img width="50" height="50"
+                            src="https://cdn.icon-icons.com/icons2/2807/PNG/512/notification_bell_icon_178938.png"
+                            alt="" srcset="">
+                        <span
+                            class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">New alerts</span>
+                        </span>
+                    </button>
+                </div>
+                <div class="col-1 pt-4">
+                    <img width="50" height="50"
+                        src="https://cdn.icon-icons.com/icons2/2596/PNG/512/history_icon_155273.png" alt="" srcset="">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                        <label class="btn btn-outline-light" for="btnradio1">USDT</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                        <label class="btn btn-outline-light" for="btnradio2">BTC</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                        <label class="btn btn-outline-light" for="btnradio3">BNB</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                        <label class="btn btn-outline-light" for="btnradio2">ETH</label>
+
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-2">
+                    <p>Cantidad</p>
+                </div>
+                <div class="col-3">
+                    <p>Método de pago</p>
+                </div>
+                <div class="col-3">
+                    <p>Comerciantes Pro (osea los Capos del Crimen, guarda que son jodidos eh)</p>
+                    <div class="form-check form-switch pt-2">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                    </div>
+                </div>
+                <div class="col-3 text-end">
+                    <p>Filtro</p>
+                </div>
+                <div class="col-1">
+                    <img width="50" height="50"
+                        src="https://cdn.icon-icons.com/icons2/936/PNG/512/filter-tool-black-shape_icon-icons.com_73566.png"
+                        alt="">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p>(Icono de iniciales)</p>
+                    <div class="col-12">
+                        <p class="magenta">Precio</p>
+                        <h2>273.00 ARS</h2>
+                        <div class="col magenta">
+                            <p>Cantidad cripto
+                            <p class="blanco">499.60 USDT</p>
+                            </p>
+                        </div>
+                        <div class="col magenta">
+                            <p>Límite
+                            <p class="blanco">ARS$ 100,000.00 - ARS$ 136,390.88</p>
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <div class="col-1 vertical-green">
+                            </div>
+                            <div class="col-6">
+                                <p>Efectivo</p>
+                            </div>
+                            <div class="col-1 vertical-blue">
+                            </div>
+                            <div class="col-6">
+                                <p>Mercado Pago</p>
+                            </div>
+                            <div class="col-1 vertical-red">
+                            </div>
+                            <div class="col-6">
+                                <p>Santander Rio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <h4>Cryptoboss</h4>
+                    <p>User: ID</p>
+                </div>
+                <div class="col-1">
+                    <img width="50" height="50"
+                        src="https://cdn.icon-icons.com/icons2/1369/PNG/512/-verified-user_89978.png" alt="">
+                </div>
+                <div class="col-2 magenta">
+                    <p>300 Órdenes | 5.10%</p>
+                    <div class="pt-5"></div>
+                    <div class="pt-5">
+                        <a href="/" type="button" class="btn btn-danger btn-lg">Vender</a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p>(Icono de iniciales)</p>
+                    <div class="col-12">
+                        <p class="magenta">Precio</p>
+                        <h2>300.00 ARS</h2>
+                        <div class="col magenta">
+                            <p>Cantidad cripto
+                            <p class="blanco">500,000.00 USDT</p>
+                            </p>
+                        </div>
+                        <div class="col magenta">
+                            <p>Límite
+                            <p class="blanco">ARS$ 100,000.00 - ARS$ 136,390.88</p>
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <div class="col-1 vertical-blue">
+                            </div>
+                            <div class="col-6">
+                                <p>Mercado Pago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <h4>Michael Jackson</h4>
+                    <p>User: ID</p>
+                </div>
+                <div class="col-1">
+                    <img width="50" height="50"
+                        src="https://cdn.icon-icons.com/icons2/1369/PNG/512/-verified-user_89978.png" alt="">
+                </div>
+                <div class="col-2 magenta">
+                    <p>3000 Órdenes | 95.00%</p>
+                    <div class="pt-5"></div>
+                    <div class="pt-5">
+                        <a href="/" type="button" class="btn btn-danger btn-lg">Vender</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

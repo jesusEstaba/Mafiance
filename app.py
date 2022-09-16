@@ -118,6 +118,16 @@ def profile_view():
     return render_template("profile.html")
 
 
-@app.route("/p2p")
-def p2p_view():
-    return render_template("p2p.html")
+@app.route("/p2pBuyer")
+def p2pBuyer_view():
+    return render_template("p2pBuyer.html")
+
+
+@app.route("/p2pSeller")
+def p2pSeller_view():
+    return render_template("p2pSeller.html")
+
+
+@app.route("/divisa")
+def divisa_view():
+    return render_template("divisa.html")

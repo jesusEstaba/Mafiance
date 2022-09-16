@@ -22,7 +22,7 @@
         }
 
         .magenta {
-            color: #8c509a;
+            color: #b96acb;
         }
 
         .fmagenta {
@@ -31,6 +31,27 @@
 
         .cuadrados {
             outline: 1px solid #d0d0d0;
+        }
+
+        .vertical-red {
+            width: 3px;
+            height: 20px;
+            background-color: red;
+            border-radius: 80px;
+        }
+
+        .vertical-blue {
+            width: 3px;
+            height: 20px;
+            background-color: rgb(76, 151, 255);
+            border-radius: 80px;
+        }
+
+        .vertical-green {
+            width: 3px;
+            height: 20px;
+            background-color: rgb(87, 255, 87);
+            border-radius: 80px;
         }
     </style>
     <title>Comercio P2P | Mafiance</title>
@@ -64,8 +85,10 @@
                     <h3>ARS</h3>
                 </div>
                 <div class="col-1 text-end px-4">
-                    <img widht="50" height="50"
-                        src="https://cdn.icon-icons.com/icons2/3263/PNG/512/exchange_icon_206963.png" alt="">
+                    <a href="/divisa">
+                        <img widht="50" height="50"
+                            src="https://cdn.icon-icons.com/icons2/3263/PNG/512/exchange_icon_206963.png" alt="">
+                    </a>
                 </div>
                 <div class="col-1">
                     <img width="50" height="50"
@@ -76,8 +99,15 @@
         <div class="container gris cuadrados blanco" style="border-radius: 20px;">
             <div class="row py-3 my-3">
                 <div class="col-5 pt-4">
-                    <button type="button" class="btn btn-outline-light btn-lg">Comprar</button>
-                    <button type="button" class="btn btn-outline-light btn-lg">Vender</button>
+                    <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
+                        <a href="/p2pBuyer" type="radio" class="btn-check" name="btnradio" id="btnradio1"
+                            autocomplete="off" checked></a>
+                        <label class="btn btn-outline-light" for="btnradio1">Comprar</label>
+
+                        <a href="/p2pSeller" type="radio" class="btn-check" name="btnradio" id="btnradio2"
+                            autocomplete="off"></a>
+                        <label class="btn btn-outline-light" for="btnradio2">Vender</label>
+                    </div>
                 </div>
                 <div class="col-4 px-5">
                     <img width="100" height="100"
@@ -142,6 +172,99 @@
                 </div>
             </div>
             <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p>(Icono de iniciales)</p>
+                    <div class="col-12">
+                        <p class="magenta">Precio</p>
+                        <h2>273.00 ARS</h2>
+                        <div class="col magenta">
+                            <p>Cantidad cripto
+                            <p class="blanco">499.60 USDT</p>
+                            </p>
+                        </div>
+                        <div class="col magenta">
+                            <p>Límite
+                            <p class="blanco">ARS$ 100,000.00 - ARS$ 136,390.88</p>
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <div class="col-1 vertical-green">
+                            </div>
+                            <div class="col-6">
+                                <p>Efectivo</p>
+                            </div>
+                            <div class="col-1 vertical-blue">
+                            </div>
+                            <div class="col-6">
+                                <p>Mercado Pago</p>
+                            </div>
+                            <div class="col-1 vertical-red">
+                            </div>
+                            <div class="col-6">
+                                <p>Santander Rio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <h4>BitcomTxm</h4>
+                    <p>User: ID</p>
+                </div>
+                <div class="col-1">
+                    <img width="50" height="50"
+                        src="https://cdn.icon-icons.com/icons2/1369/PNG/512/-verified-user_89978.png" alt="">
+                </div>
+                <div class="col-2 magenta">
+                    <p>120 Órdenes | 81.10%</p>
+                    <div class="pt-5"></div>
+                    <div class="pt-5">
+                        <a href="/" type="button" class="btn fmagenta btn-lg">Comprar</a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-3">
+                    <p>(Icono de iniciales)</p>
+                    <div class="col-12">
+                        <p class="magenta">Precio</p>
+                        <h2>300.00 ARS</h2>
+                        <div class="col magenta">
+                            <p>Cantidad cripto
+                            <p class="blanco">500,000.00 USDT</p>
+                            </p>
+                        </div>
+                        <div class="col magenta">
+                            <p>Límite
+                            <p class="blanco">ARS$ 100,000.00 - ARS$ 136,390.88</p>
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <div class="col-1 vertical-blue">
+                            </div>
+                            <div class="col-6">
+                                <p>Mercado Pago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <h4>Michael Jackson</h4>
+                    <p>User: ID</p>
+                </div>
+                <div class="col-1">
+                    <img width="50" height="50"
+                        src="https://cdn.icon-icons.com/icons2/1369/PNG/512/-verified-user_89978.png" alt="">
+                </div>
+                <div class="col-2 magenta">
+                    <p>3000 Órdenes | 95.00%</p>
+                    <div class="pt-5"></div>
+                    <div class="pt-5">
+                        <a href="/" type="button" class="btn btn-secondary btn-lg">Restringido >>></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </body>
