@@ -131,3 +131,8 @@ def p2pSeller_view():
 @app.route("/divisa")
 def divisa_view():
     return render_template("divisa.html")
+
+
+@app.route("/orders")
+def orders_view():
+    return render_template("orders.html")
