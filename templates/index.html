@@ -7,7 +7,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-        <link rel="icon" href="https://static.thenounproject.com/png/40328-200.png">
+        <link rel="icon" href="https://i.imgur.com/iYKmUvA.png">
+        <script src="https://kit.fontawesome.com/68d8235f51.js" crossorigin="anonymous"></script>
         <style type="text/css">
             .blanco {
                 color: white;
@@ -32,8 +33,12 @@
             .cuadrados {
                 outline: 1px solid #d0d0d0;
             }
+
+            .amarillo {
+                color: #ffc107;
+            }
         </style>
-        <title>Mafiance</title>
+        <title>Billetera | Mafiance</title>
 </head>
 
 <body>
@@ -50,143 +55,104 @@
                         <div class="container-fluid">
                             <form class="d-flex" role="search">
                                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Buscar">
-                                <button class="btn btn-outline-light" type="submit">🔍</button>
+                                <button class="btn btn-outline-light" type="submit"><i
+                                        class="fa-solid fa-magnifying-glass"></i></button>
                             </form>
                         </div>
                     </nav>
                 </div>
-                <div class="col-2">
-                    <img width="100" height="100" src="https://cdn.icon-icons.com/icons2/1898/PNG/512/scan_121131.png"
-                        alt="" srcset="">
+                <div class="col-2 pt-3">
+                    <i class="fa-solid fa-qrcode fa-4x"></i>
                 </div>
-                <div class="col-2">
-                    <img width="100" height="100"
-                        src="https://cdn.icon-icons.com/icons2/2449/PNG/512/headphones_head_set_chat_live_support_icon_148822.png"
-                        alt="" srcset="">
+                <div class="col-2 pt-3">
+                    <i class="fa-solid fa-headphones fa-4x"></i>
                 </div>
-                <div class="col-2">
-                    <img width="100" height="100"
-                        src="https://cdn.icon-icons.com/icons2/2807/PNG/512/notification_bell_icon_178938.png" alt=""
-                        srcset="">
+                <div class="col-2 pt-3">
+                    <i class="fa-solid fa-bell fa-4x"></i>
                 </div>
-                <div class="col-2">
-                    <img width="100" height="100"
-                        src="https://cdn.icon-icons.com/icons2/3263/PNG/512/hand_coin_icon_206951.png" alt="" srcset="">
+                <div class="col-2 pt-3">
+                    <i class="fa-solid fa-hand-holding-dollar fa-4x"></i>
                 </div>
             </div>
         </div>
     </section>
     <section class="negro">
         <div class="container blanco py-3">
+            <div class="row py-5">
+                <div class="col-6 pt-4 text-center cuadrados" style="border-radius: 30px;">
+                    <h4>Balance total</h4>
+                    <h1>$500.00</h1>
+                </div>
+                <div class="col-6 magenta text-center cuadrados pt-3" style="border-radius: 30px;">
+                    <h2>Mafiance Coin</h2>
+                    <a href="/comercio" type="button" class="btn fmagenta btn-lg blanco">Comprar +</a>
+
+                    <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Vender -</a>
+
+                    <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Convertir ⇋</a>
+                    <img widht="100" height="100"
+                        src="https://cdn.icon-icons.com/icons2/390/PNG/512/crown-coin_38380.png" alt="">
+                </div>
+            </div>
+            <hr>
             <div class="row">
-                <div class="col">
-                    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
-                                class="active" aria-current="true" aria-label="Slide 1"></button>
-                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                                aria-label="Slide 2"></button>
-                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                                aria-label="Slide 3"></button>
-                        </div>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="https://estaticos-cdn.prensaiberica.es/clip/fb81a25d-67f1-458f-a09c-103fd744f500_16-9-discover-aspect-ratio_default_0.jpg"
-                                    class="d-block w-100" alt="...">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>First slide label</h5>
-                                    <p>Some representative placeholder content for the first slide.</p>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://blockchainguatemala.org/wp-content/uploads/2022/07/el-regulador-australiano-prueba-la-eliminacion-automatica-de-los-sitios-de-estafa-de-criptomonedas.jpg"
-                                    class="d-block w-100" alt="...">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>Second slide label</h5>
-                                    <p>Some representative placeholder content for the second slide.</p>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <img src="https://www.criptonoticias.com/wp-content/uploads/2021/09/robos-defi-dapps-1024x576.jpg"
-                                    class="d-block w-100" alt="...">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>Third slide label</h5>
-                                    <p>Some representative placeholder content for the third slide.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://i.pcmag.com/imagery/articles/06GJTmslGF10jd9FWGbI7jZ-1..v1638208999.jpg"
-                                class="d-block w-100" alt="...">
-                            <div class="carousel-caption d-none d-md-block">
-                                <h5>Third slide label</h5>
-                                <p>Some representative placeholder content for the third slide.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <img src="https://static.news.bitcoin.com/wp-content/uploads/2022/02/binance-phishing-scam.jpg"
-                            class="d-block w-100" alt="...">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Third slide label</h5>
-                            <p>Some representative placeholder content for the third slide.</p>
-                        </div>
-                    </div>
+                <div class="col-12">
+                    <h4>Activos</h4>
                 </div>
-                <div class="carousel-item">
-                    <img src="https://btodigital.com/wp-content/uploads/2022/04/¿Comprar-casa-con-bitcoins-BTODigital.png"
-                        class="d-block w-100" alt="...">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Third slide label</h5>
-                        <p>Some representative placeholder content for the third slide.</p>
-                    </div>
+                <div class="col-6 text-end">
+                    <img width="30" height="30" src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt=""
+                        srcset="">
+                    <h6>TetherUS</h6>
+                    <small style="color: grey">USDT</small>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-            <div class="row text-center py-5">
-                <div class="col-2">
-                    <img width="100" height="100" src="https://static.thenounproject.com/png/39980-200.png" alt="">
-                    <h6 class="pt-3">Launchpad</h6>
-                </div>
-                <div class="col-2">
-                    <img width="100" height="100" src="https://static.thenounproject.com/png/161182-200.png" alt="">
-                    <h6 class="pt-3">Estrategias de trading</h6>
-                </div>
-                <div class="col-4">
-                    <img width="100" height="100"
-                        src="https://s3.amazonaws.com/iconbros/icons/icon_pngs/000/012/458/original/money_5514944.png?1632676157"
-                        alt="">
-                    <h6 class="pt-3">Depositar</h6>
-                </div>
-                <div class="col-2">
-                    <img width="100" height="100"
-                        src="https://cdn.icon-icons.com/icons2/3263/PNG/512/vip_diamond_icon_206879.png" alt="">
-                    <h6 class="pt-3">Ganar</h6>
-                </div>
-                <div class="col-2">
-                    <img width="100" height="100"
-                        src="https://cdn.iconscout.com/icon/free/png-512/options-1767904-1502157.png" alt="">
-                    <h6 class="pt-3">Más</h6>
+                <div class="col-6">
+                    <h6>500.00000000</h6>
+                    <small>$500.00</small>
                 </div>
             </div>
-        </div>
+            <hr>
+            <div class="row py-4">
+                <div class="col-3 text-center">
+                    <i class="fa-solid fa-rocket fa-4x"></i>
+                    <div class="pt-3">
+                        <a href="/index" type="button" class="btn btn-warning">Launchpad</a>
+                    </div>
+                </div>
+                <div class="col-2 text-center">
+                    <i class="fa-solid fa-chart-line fa-4x"></i>
+                    <div class="pt-3">
+                        <a href="/index" type="button" class="btn btn-warning">Estrategias de trading</a>
+                    </div>
+                </div>
+                <div class="col-2 text-center">
+                    <i class="fa-solid fa-landmark fa-4x"></i>
+                    <div class="pt-3">
+                        <a href="/index" type="button" class="btn btn-warning">Depositar</a>
+                    </div>
+                </div>
+                <div class="col-2 text-center">
+                    <i class="fa-solid fa-money-bill-trend-up fa-4x"></i>
+                    <div class="pt-3">
+                        <a href="/index" type="button" class="btn btn-warning">Ganar</a>
+                    </div>
+                </div>
+                <div class="col-3 text-center">
+                    <i class="fa-solid fa-bars fa-4x"></i>
+                    <div class="pt-3">
+                        <a href="/index" type="button" class="btn btn-warning">Más</a>
+                    </div>
+                </div>
+            </div>
+
     </section>
     <section class="negro">
         <div class="container">
             <a href="/p2pBuyer" class="text-decoration-none">
                 <div class="row cuadrados gris blanco" style="border-radius: 30px;">
-                    <div class="col-12 py-4">
+                    <div class="col-12 py-4 magenta">
                         <h3>Comercio P2P</h3>
                     </div>
+                    <hr>
                     <div class="col-6">
                         <p>Transferencia bancaria, transferencia de billetera digital, pago móvil o depósitos en cuentas
                             de las bahamas, (cobramos el 40% de las transacciones directo de la billetera)</p>
@@ -195,11 +161,11 @@
                         <img widht="100" height="100"
                             src="https://cdn.icon-icons.com/icons2/3263/PNG/512/exchange_icon_206963.png" alt="">
                     </div>
-                    <div class="col-2 pt-4">
+                    <div class="col-2 pt-2">
                         <h1 class="magenta">MAFIANCE</h1>
                     </div>
-                    <div class="col-2 text-center">
-                        <img widht="100" height="100" src="https://static.thenounproject.com/png/40328-200.png" alt="">
+                    <div class="col-2 mb-1">
+                        <i class="fa-brands fa-redhat fa-5x"></i>
                     </div>
                 </div>
             </a>
@@ -212,8 +178,8 @@
                     <a href="/index" type="button" class="btn btn-outline-light btn-lg">Volumen 24h</a>
                 </div>
             </div>
-            <hr>
             <div class="row py-3 blanco">
+                <hr>
                 <div class="col-4 text-center">
                     <div class="pb-4">
                         <small style="color: grey">Nombre</small>
@@ -254,35 +220,30 @@
                         <button type="button" class="btn btn-danger">-15.95%</button>
                     </div>
                 </div>
+                <hr>
             </div>
         </div>
         <div class="container blanco">
             <div class="row cuadrados fmagenta py-3" style="border-radius: 30px;">
                 <div class="col-3 text-end px-5">
-                    <img widht="100" height="100"
-                        src="https://cdn.icon-icons.com/icons2/1790/PNG/512/homepage1_114609.png" alt="">
-                    <h6 class="pt-2 px-4">Inicio</h6>
+                    <i class="fa-solid fa-house fa-4x"></i>
+                    <h6 class="pt-2 px-3">Inicio</h6>
                 </div>
                 <div class="col-2 text-center">
-                    <img widht="100" height="100"
-                        src="https://i.pinimg.com/originals/46/89/02/468902fa6da7dd4a5c589c755361c53d.png" alt="">
+                    <i class="fa-solid fa-chart-simple fa-4x"></i>
                     <h6 class="pt-2">Mercados</h6>
                 </div>
                 <div class="col-2 text-center">
-                    <img widht="100" height="100"
-                        src="https://cdn.icon-icons.com/icons2/390/PNG/512/crown-coin_38380.png" alt="">
+                    <i class="fa-solid fa-coins fa-4x"></i>
                     <h6 class="pt-2">Trades</h6>
                 </div>
                 <div class="col-2 text-center">
-                    <img widht="100" height="100"
-                        src="https://cdn.icon-icons.com/icons2/3263/PNG/512/vip_crown_icon_206883.png" alt="">
+                    <i class="fa-solid fa-file-invoice-dollar fa-4x"></i>
                     <h6 class="pt-2">Futuros</h6>
                 </div>
                 <div class="col-3 px-5">
-                    <img widht="100" height="100"
-                        src="https://icons.veryicon.com/png/o/education-technology/cloud-platform-1/wallet-icon.png"
-                        alt="">
-                    <h6 class="pt-2 px-3">Billeteras</h6>
+                    <i class="fa-solid fa-wallet fa-4x"></i>
+                    <h6 class="pt-2">Billeteras</h6>
                 </div>
             </div>
         </div>

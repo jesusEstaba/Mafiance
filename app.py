@@ -21,44 +21,29 @@ def home_view():
 
 @app.route("/login")
 def login_view():
-    mensaje1 = request.args.get('mensaje1')
-    return render_template("login.html", mensaje1=mensaje1)
-
-
-@app.route("/loginpass")
-def loginpass_view():
-    mensaje2 = request.args.get('mensaje2')
-    return render_template("loginpass.html", mensaje2=mensaje2)
+    mensaje = request.args.get('mensaje')
+    return render_template("login.html", mensaje=mensaje)
 
 
 @app.route("/login/admins")
 def login_admins():
     adminEmail = request.args.get('email')
-    if adminEmail == "":
-        return redirect('/login?mensaje1=Ingresa el Email')
-
-    adminDocument = db.admins.find_one({'email': adminEmail})
-
-    if not adminDocument:
-        return redirect('/login?mensaje1=El usuario no existe')
-
-    session['admin'] = str(adminDocument['_id'])
-    return redirect('/loginpass')
-
-
-@app.route("/loginpass/admins")
-def loginpass_admins():
-
     adminPassword = request.args.get('password')
 
+    if adminEmail == "":
+        return redirect('/login?mensaje=Ingresa el Email')
     if adminPassword == "":
-        return redirect('/loginpass?mensaje2=Ingresa la contraseña')
+        return redirect('/login?mensaje=Ingresa la contraseña')
 
-    # Arreglar que entienda 1 clave por usuario.
-    adminDocument = db.admins.find_one({'password': adminPassword})
-
+    adminDocument = db.admins.find_one(
+        {'email': adminEmail, 'password': adminPassword})
     if adminDocument['password'] != adminPassword:
-        return redirect('/loginpass?mensaje2=La contraseña no es válida')
+        return redirect('/login?mensaje=La contraseña no es válida')
+
+    if not adminDocument:
+        return redirect('/login?mensaje=El usuario no existe')
+
+    session['admin'] = str(adminDocument['_id'])
 
     return redirect('/index')
 
@@ -86,7 +71,7 @@ def signin_user():
 
     emailSplitted = newEmail.split('@')
 
-    if len(emailSplitted) != 2 or emailSplitted[1] != 'gmail.com':
+    if len(emailSplitted) != 2 or emailSplitted[1] != 'gmail.com' != 'hotmail.com':
 
         return redirect('/signin?mensaje3=la dirección de correo no es válida, debe contener @gmail.com ó @hotmail.com')
 
@@ -136,3 +121,8 @@ def divisa_view():
 @app.route("/orders")
 def orders_view():
     return render_template("orders.html")
+
+
+@app.route("/comercio")
+def trade_view():
+    return render_template("comercio_cripto.html")

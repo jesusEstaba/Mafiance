@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <link rel="icon" href="https://static.thenounproject.com/png/40328-200.png">
+    <link rel="icon" href="https://i.imgur.com/iYKmUvA.png">
+    <script src="https://kit.fontawesome.com/68d8235f51.js" crossorigin="anonymous"></script>
     <style type="text/css">
         .blanco {
             color: white;
@@ -30,12 +31,12 @@
 
 <body>
     <section class="negro">
-        {% if mensaje1 %}
+        {% if mensaje %}
         <div class="container py-2">
             <div class="row">
                 <div class="col-12">
                     <div class="alert alert-danger" role="alert">
-                        {{mensaje1}}
+                        {{mensaje}}
                     </div>
                 </div>
             </div>
@@ -43,35 +44,50 @@
         {% endif %}
         <form class="container blanco" action="/login/admins">
             <div class="row">
-                <div class="col py-5 text-end">
+                <div class="col-12 py-5 text-end">
                     <a href="/" type="button" class="btn-close btn-close-white" aria-label="Close"></a>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col py-3 magenta">
+                <div class="col-6 py-3  magenta">
                     <h1>Iniciar sesión</h1>
+                    <hr>
+                    <label for="exampleFormControlInput1" class="form-label">
+                        <h6>Email/Nombre de usuario</h6>
+                    </label>
+                    <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="example@gmail.com"
+                        name="email">
+                    <label for="exampleFormControlInput1" class="form-label pt-3">
+                        <h6>Contraseña</h6>
+                    </label>
+                    <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="********"
+                        name="password">
+                    <div class="col py-3 text-center">
+                        <div class="col text-center pt-3 pb-5">
+                            <a href="#" class="text-decoration-none magenta">
+                                <h6>¿Olvidaste la contraseña?</h6>
+                                <h6>Anótala para la próxima...</h6>
+                            </a>
+                        </div>
+                        <button type="submit" class="btn btn-outline-warning btn-lg">Ingresar</button>
+                    </div>
+                    <div class="col-12">
+                        <p>(No apto para generación Z).</p>
+                    </div>
+                    <hr>
                 </div>
-                <label for="exampleFormControlInput1" class="form-label">
-                    <h6>Email/número de teléfono</h6>
-                </label>
-                <input type="#" class="form-control" id="exampleFormControlInput1" placeholder="" name="email">
-                <div class="col py-3 text-center">
-                    <button type="submit" class="btn btn-outline-light btn-lg">Siguiente</button>
+                <div class="col-6 cuadrados fmagenta py-5 text-center" style="border-radius: 30px;">
+                    <img width="400" height="400" src="https://i.imgur.com/iYKmUvA.png" alt="" srcset="">
                 </div>
-                <div class="col-12 text-end magenta">
-                    <p>(No apto para generación Z).</p>
-                </div>
-                <hr>
-                <small class="text-center">o continuar con</small>
+
+                <small class="text-center">Continuar con</small>
                 <div class="col-12 pt-3 text-center">
                     <a href="#" type="button" class="btn btn-secondary btn-lg">Google</a>
                 </div>
                 <div class="col text-center pt-3 pb-5">
                     <a href="/signin" class="text-decoration-none magenta">
-                        <h6>Crear cuenta, quiero unirme a la Mafiance</h6>
+                        <h6>No tengo cuenta, quiero unirme a la Mafiance</h6>
                     </a>
                 </div>
-            </div>
+
         </form>
     </section>
 </body>
