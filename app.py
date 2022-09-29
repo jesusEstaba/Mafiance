@@ -2,6 +2,7 @@ from types import NoneType
 from flask import Flask, render_template, redirect, session, request, abort
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from datetime import datetime
 import os
 import random
 
@@ -184,7 +185,7 @@ def add():
         'wallet_receiver_id': userId,
         'amount': amount,
         'currency': "MFC",
-        'created_at': "jueves"  # usar funcion date.now()
+        'created_at': datetime.now()
     }
     db.transactions.insert_one(newTransaction)
     # Agregar y aumentar el balance.
@@ -202,3 +203,111 @@ def add():
         return abort(404)
 
     return redirect("/index")
+
+
+@app.route("/send")
+def send_view():
+    if not session.get('user_id'):
+        return redirect('/')
+    mensaje = request.args.get('mensaje')
+    return render_template("send.html", mensaje=mensaje)
+
+
+@app.route("/send/wallet")
+def sendtoWallet():
+    if not session.get('user_id'):
+        return redirect('/')
+
+    wallet_id = request.args.get('wallet_id')
+    amount = float(request.args.get('quantity'))
+    # se valida antes
+    if wallet_id == "":
+        return redirect('/send?mensaje=Ingresa el ID de la billetera')
+    if amount == "":
+        return redirect('/send?mensaje=Ingresa una cantidad')
+
+    if len(wallet_id) < 24:
+        return redirect('/send?mensaje=La billetera no existe')
+
+    userId = session.get('user_id')
+
+    # Definimos las variables para buscar cada wallet y se hizo un filtro con currency para que especificar el tipo
+    # de moneda que ambas wallet sean POR EJEMPLO USDT. y en el diccionario con str(senderWallet)
+    # evitamos traer un object Id y nos traemos por si acaso un string.
+    receiverWallet = db.wallets.find_one({'_id': ObjectId(wallet_id)})
+    senderWallet = db.wallets.find_one(
+        {'user_id': userId, 'currency': receiverWallet['currency']})
+
+    if not senderWallet:
+        return redirect('/send?mensaje=No tienes una billetera con esta moneda')
+
+    newTransaction = {
+        'wallet_sender_id': str(senderWallet['_id']),
+        'wallet_receiver_id': wallet_id,
+        'amount': amount,
+        'currency': receiverWallet['currency'],
+        'created_at': datetime.now()
+    }
+    lastTransactionId = db.transactions.insert_one(newTransaction).inserted_id
+    return redirect('/send_confirm/' + str(lastTransactionId))
+
+
+@app.route("/send_confirm/<id>")
+def send_confirm_view(id):
+    if not session.get('user_id'):
+        return redirect('/')
+    # FORMA DE ACCEDER AL ID DE UN DOCUMENTO CREADO A TRAVES DE UNA COLECCION A OTRA QUE COINCIDA CON EL ID.
+    # (Imprimimos al final en el html send_confirm el nombre del usuario a traves de la variable user_name)
+    transactionDocument = db.transactions.find_one({'_id': ObjectId(id)})
+    if not(transactionDocument):
+        return abort(404)
+
+    receiverWallet = db.wallets.find_one(
+        {'_id': ObjectId(transactionDocument['wallet_receiver_id'])})
+
+    receiver_id = receiverWallet['user_id']
+
+    user_name = db.users.find_one({'_id': ObjectId(receiver_id)})
+
+    return render_template("send_confirm.html", transactionDocument=transactionDocument, user_name=user_name)
+
+
+@app.route("/update_wallet_receiver/<id>")
+def update_wallet_receiver(id):
+    if not session.get('user_id'):
+        return redirect('/')
+
+    transactionDocument = db.transactions.find_one({'_id': ObjectId(id)})
+
+    senderWallet = db.wallets.find_one(
+        {'_id': ObjectId(transactionDocument['wallet_sender_id'])})
+    receiverWallet = db.wallets.find_one(
+        {'_id': ObjectId(transactionDocument['wallet_receiver_id'])})
+
+    if not senderWallet or not receiverWallet:
+        return abort(404)
+
+    if senderWallet['balance'] <= float(0):
+        return redirect('/send?mensaje=Saldo insuficiente')
+
+    db.wallets.update_one(
+        {'_id': ObjectId(transactionDocument['wallet_sender_id'])},
+        {
+            '$set': {'balance': senderWallet['balance'] - transactionDocument['amount']}
+        }
+    )
+    db.wallets.update_one(
+        {'_id': ObjectId(transactionDocument['wallet_receiver_id'])},
+        {
+            '$set': {'balance': receiverWallet['balance'] + transactionDocument['amount']}
+        }
+    )
+
+    return redirect('/completed')
+
+
+@app.route("/completed")
+def completed_view():
+    if not session.get('user_id'):
+        return redirect('/')
+    return render_template("completed.html")

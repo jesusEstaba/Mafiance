@@ -81,17 +81,24 @@
             <div class="row py-5">
                 <div class="col-6 pt-4 text-center cuadrados" style="border-radius: 30px;">
                     <h4>Balance total</h4>
-                    <h1>${{actualBalance['currency']}} {{actualBalance['balance']}} </h1>
+                    <h1>${{actualBalance['currency']}} {{actualBalance['balance']}}</h1>
                 </div>
                 <div class="col-6 magenta text-center cuadrados pt-3" style="border-radius: 30px;">
                     <h2>Mafiance Coin</h2>
-                    <a href="/comercio" type="button" class="btn fmagenta btn-lg blanco">Comprar +</a>
+                    <a href="/comercio" type="button" class="btn fmagenta btn-lg blanco">Comprar <i
+                            class="fa-solid fa-plus fa-1x"></i></a>
 
-                    <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Vender -</a>
+                    <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Vender <i
+                            class="fa-solid fa-minus fa-1x"></i></a>
 
-                    <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Convertir ⇋</a>
-                    <img widht="100" height="100"
-                        src="https://cdn.icon-icons.com/icons2/390/PNG/512/crown-coin_38380.png" alt="">
+                    <a href="/send" type="button" class="btn fmagenta btn-lg blanco">Enviar <i
+                            class="fa-solid fa-paper-plane fa-1x"></i></a>
+                    <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Recibir <i
+                            class="fa-solid fa-wallet fa-1x"></i></a>
+                    <div class="py-3">
+                        <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Convertir ⇋</a>
+                    </div>
+
                 </div>
             </div>
             <hr>
@@ -100,14 +107,12 @@
                     <h4>Activos</h4>
                 </div>
                 <div class="col-6 text-end">
-                    <img width="30" height="30" src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt=""
-                        srcset="">
-                    <h6>TetherUS</h6>
-                    <small style="color: grey">USDT</small>
+                    <i class="fa-brands fa-redhat fa-3x"></i>
+                    <h6 class="amarillo">Mafiance Coin</h6>
+                    <h3 class="magenta">{{actualBalance['currency']}}</h3>
                 </div>
-                <div class="col-6">
-                    <h6>500.00000000</h6>
-                    <small>$500.00</small>
+                <div class="col-6 mt-5">
+                    <h3>${{actualBalance['balance']}}</h3>
                 </div>
             </div>
             <hr>
