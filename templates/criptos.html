@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="icon" href="https://i.imgur.com/iYKmUvA.png">
+    <script src="https://kit.fontawesome.com/68d8235f51.js" crossorigin="anonymous"></script>
+    <style type="text/css">
+        .blanco {
+            color: white;
+        }
+
+        .negro {
+            background-color: #1f1e1e;
+        }
+
+        .gris {
+            background-color: #393939;
+        }
+
+        .magenta {
+            color: #b96acb;
+        }
+
+        .fmagenta {
+            background-color: #8c509a;
+        }
+
+        .cuadrados {
+            outline: 1px solid #b96acb;
+        }
+
+        .amarillo {
+            color: #ffc107;
+        }
+    </style>
+    <title>Agregar Criptos | Mafiance</title>
+</head>
+
+<body>
+    <section class="negro blanco pb-5">
+        {% if mensaje %}
+        <div class="container py-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert">
+                        {{mensaje}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="container">
+            <div class="row py-3">
+                <div class="col-12">
+                    <a href="/index">
+                        <i class="fa-solid fa-arrow-left-long fa-3x blanco"></i>
+                    </a>
+                </div>
+                <div class="col magenta pt-5">
+                    <h1>Agregar nueva cripto <i class="fa-solid fa-plus fa-1x"></i></h1>
+                    <h6 class="amarillo">Puede elegir la de su preferencia y tener más de dos wallets (así ves con qué
+                        moneda trampeas).</h6>
+                </div>
+                <hr class="amarillo">
+            </div>
+            <div class="row pb-5">
+                {% for c in coins %}
+                <div class="col-3"></div>
+                <div class="col-3 cuadrados py-3 mb-4" style="border-radius: 20px;">
+                    <h2>{{c['name']}} | {{c['acronym']}}</h2>
+                    <hr class="amarillo">
+                    <h5 class="amarillo text-center">{{c['value']}} $ARS</h5>
+                </div>
+                <div class="col-3 pt-5">
+                    <img width="50" height="50" src="{{c['img']}}" alt="">
+                    <a href="/addCripto/{{c['_id']}}" type="button" class="btn fmagenta btn-lg blanco">Adquirir <i
+                            class="fa-regular fa-circle-check fa-1x"></i></a>
+                </div>
+                <div class="col-3"></div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

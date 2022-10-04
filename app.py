@@ -93,6 +93,7 @@ def signin_user():
     newUserId = str(db.users.insert_one(newUser).inserted_id)
     # inserta el documento y devuelve el id del documento insertado con .inserted_id por eso se escribe abajo newUserId
     newWallet = {
+        'name': "Mafiance Coin",
         'currency': "MFC",
         'balance': 0.0,
         'user_id': newUserId,
@@ -119,8 +120,8 @@ def index_view():
     userId = session.get('user_id')
 
     actualBalance = db.wallets.find_one({'user_id': userId})
-
-    return render_template("index.html", actualBalance=actualBalance)
+    criptoactives = list(db.wallets.find({'user_id': userId}))
+    return render_template("index.html", actualBalance=actualBalance, criptoactives=criptoactives)
 
 
 @app.route("/profile")
@@ -303,11 +304,61 @@ def update_wallet_receiver(id):
         }
     )
 
-    return redirect('/completed')
+    return redirect('/completed/' + str(transactionDocument['_id']))
 
 
-@app.route("/completed")
-def completed_view():
+@app.route("/completed/<id>")
+def completed_view(id):
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("completed.html")
+    transactionDocument = db.transactions.find_one({'_id': ObjectId(id)})
+    return render_template("completed.html", transactionDocument=transactionDocument)
+
+
+@app.route("/criptos")
+def criptos_view():
+    if not session.get('user_id'):
+        return redirect('/')
+    mensaje = request.args.get('mensaje')
+    # En la vista hicimos que muestre el id al pasar el cursor.
+    coins = list(db.coins.find())
+    return render_template("criptos.html", mensaje=mensaje, coins=coins)
+
+
+@app.route("/addCripto/<id>")
+def addCripto(id):
+    coin_id = db.coins.find_one({'_id': ObjectId(id)})
+    if not coin_id:
+        return abort(404)
+    coin_acronym = coin_id['acronym']
+    coin_img = coin_id['img']
+    coin_name = coin_id['name']
+    userId = session.get('user_id')
+
+    user_wallets = list(db.wallets.find(
+        {'user_id': userId, 'currency': coin_acronym}))  # PENDIENTE DE RESOLVER ##############
+
+    if user_wallets[coin_acronym] == coin_acronym:
+        return redirect('/criptos?mensaje=Ya posees una billetera con esa cripto ambicioso...')
+    else:
+        newWallet = {
+            'currency': str(coin_acronym),
+            'balance': 0.0,
+            'img': coin_img,
+            'name': coin_name,
+            'user_id': userId,
+        }
+    new_wallet_Id = db.wallets.insert_one(newWallet).inserted_id
+    return redirect('/new_cripto_completed/' + str(new_wallet_Id))
+
+
+@app.route("/new_cripto_completed/<id>")
+def newCripto(id):
+    if not session.get('user_id'):
+        return redirect('/')
+
+    new_wallet_cripto = db.wallets.find_one({'_id': ObjectId(id)})
+    if not(new_wallet_cripto):
+        return abort(404)
+
+    return render_template("new_cripto_completed.html", new_wallet_cripto=new_wallet_cripto)

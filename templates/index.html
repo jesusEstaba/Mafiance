@@ -34,6 +34,10 @@
                 outline: 1px solid #d0d0d0;
             }
 
+            .cuadradosM {
+                outline: 1px solid #b96acb;
+            }
+
             .amarillo {
                 color: #ffc107;
             }
@@ -71,7 +75,9 @@
                     <i class="fa-solid fa-bell fa-4x"></i>
                 </div>
                 <div class="col-2 pt-3">
-                    <i class="fa-solid fa-hand-holding-dollar fa-4x"></i>
+                    <a href="/criptos">
+                        <i class="fa-solid fa-hand-holding-dollar fa-4x blanco"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -101,21 +107,25 @@
 
                 </div>
             </div>
-            <hr>
+            <hr class="amarillo">
             <div class="row">
                 <div class="col-12">
                     <h4>Activos</h4>
                 </div>
+                {% for c in criptoactives %}
                 <div class="col-6 text-end">
-                    <i class="fa-brands fa-redhat fa-3x"></i>
-                    <h6 class="amarillo">Mafiance Coin</h6>
-                    <h3 class="magenta">{{actualBalance['currency']}}</h3>
+                    <!--<i class="fa-brands fa-redhat fa-3x"></i>-->
+                    <img width="30" height="30" src="{{c['img']}}" alt="">
+                    <h6 class="amarillo">{{c['name']}}</h6>
+                    <h3 class="magenta">{{c['currency']}}</h3>
                 </div>
-                <div class="col-6 mt-5">
-                    <h3>${{actualBalance['balance']}}</h3>
+                <div class="col-6 mt-4">
+                    <h3>${{c['balance']}}</h3>
+
                 </div>
+                <hr class="amarillo">
+                {% endfor %}
             </div>
-            <hr>
             <div class="row py-4">
                 <div class="col-3 text-center">
                     <i class="fa-solid fa-rocket fa-4x"></i>
@@ -153,11 +163,11 @@
     <section class="negro">
         <div class="container">
             <a href="/p2pBuyer" class="text-decoration-none">
-                <div class="row cuadrados gris blanco" style="border-radius: 30px;">
+                <div class="row cuadradosM gris blanco" style="border-radius: 30px;">
                     <div class="col-12 py-4 magenta">
                         <h3>Comercio P2P</h3>
                     </div>
-                    <hr>
+                    <hr class="amarillo">
                     <div class="col-6">
                         <p>Transferencia bancaria, transferencia de billetera digital, pago móvil o depósitos en cuentas
                             de las bahamas, (cobramos el 40% de las transacciones directo de la billetera)</p>
@@ -184,7 +194,7 @@
                 </div>
             </div>
             <div class="row py-3 blanco">
-                <hr>
+                <hr class="amarillo">
                 <div class="col-4 text-center">
                     <div class="pb-4">
                         <small style="color: grey">Nombre</small>
@@ -225,7 +235,7 @@
                         <button type="button" class="btn btn-danger">-15.95%</button>
                     </div>
                 </div>
-                <hr>
+                <hr class="amarillo">
             </div>
         </div>
         <div class="container blanco">

@@ -30,54 +30,39 @@
             background-color: #8c509a;
         }
 
-        .cuadradosM {
+        .cuadrados {
             outline: 1px solid #b96acb;
-        }
-
-        .cuadradosA {
-            outline: 1px solid #ffc107;
         }
 
         .amarillo {
             color: #ffc107;
         }
     </style>
-    <title>Envío completado</title>
+    <title>Nueva billetera | Mafiance</title>
 </head>
 
 <body>
-    <section class="negro blanco pb-5">
+    <section class="negro pb-5">
         <div class="container">
-            <div class="row fmagenta py-3" style="border-radius: 20px;">
-                <div class=" col-10">
-                    <a href="/send_confirm/{{transactionDocument['_id']}}">
+            <div class="row py-3">
+                <div class="col-4">
+                    <a href="/criptos">
                         <i class="fa-solid fa-arrow-left-long fa-3x blanco"></i>
                     </a>
                 </div>
-                <div class="col-1">
-                    <i class="fa-solid fa-clock-rotate-left fa-3x"></i>
+                <div class="col-4 text-center">
+                    <i class="fa-brands fa-redhat blanco fa-4x"></i>
                 </div>
-                <div class="col-1 pt-2">
-                    <a href="/" class="text-decoration-none blanco">
-                        <h4>Recibir</h4>
-                    </a>
-                </div>
-            </div>
-            <div class="row py-5">
-                <div class="col-4">
-                    <a href="/index" class="text-decoration-none">
-                        <h4 class="magenta">Volver a Mafiance</h4>
-                        <i class="fa-solid fa-wallet fa-3x blanco"></i>
-                    </a>
-                </div>
-                <div class="col-4 py-3 text-center cuadradosM" style="border-radius: 20px;">
-                    <h2>Transacción Completada.</h2>
+                <div class="col-4"></div>
+                <div class="col magenta pt-3 pb-5 text-center">
+                    <h1>¡Nueva billetera agregada!</h1>
+                    <p>{{new_wallet_cripto['_id']}}</p>
                     <hr class="amarillo">
-                    <i class="fa-brands fa-redhat fa-5x"></i>
+                    <h6 class="amarillo pb-5">Criptoactivos disponibles.</h6>
+                    <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Ir a la wallet <i
+                            class="fa-solid fa-check-double fa-1x"></i></a>
                 </div>
-                <div class="col-4 text-end">
-                    <h5>order ID: {{transactionDocument['_id']}}</h5>
-                </div>
+
             </div>
         </div>
     </section>
