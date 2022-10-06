@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="icon" href="https://i.imgur.com/iYKmUvA.png">
+    <script src="https://kit.fontawesome.com/68d8235f51.js" crossorigin="anonymous"></script>
+    <style type="text/css">
+        .blanco {
+            color: white;
+        }
+
+        .negro {
+            background-color: #1f1e1e;
+        }
+
+        .gris {
+            background-color: #393939;
+        }
+
+        .magenta {
+            color: #b96acb;
+        }
+
+        .fmagenta {
+            background-color: #8c509a;
+        }
+
+        .cuadrados {
+            outline: 1px solid #b96acb;
+        }
+
+        .amarillo {
+            color: #ffc107;
+        }
+    </style>
+    <title>Anuncios | P2P </title>
+</head>
+
+<body>
+    <section class="negro blanco pb-5">
+        <div class="container">
+            <div class="row fmagenta py-3" style="border-radius: 20px;">
+                <div class="col-2">
+                    <a href="/p2pBuyer">
+                        <i class="fa-solid fa-arrow-left-long fa-3x blanco"></i>
+                    </a>
+                </div>
+                <div class="col-8 text-center">
+                    <h2>Mis anuncios</h2>
+                </div>
+                <div class="col-1">
+                    <a href="/publish_buyer">
+                        <i class="fa-solid fa-plus fa-3x blanco"></i>
+                    </a>
+                </div>
+                <div class="col-1">
+                    <i class="fa-solid fa-clock-rotate-left fa-3x"></i>
+                </div>
+            </div>
+            <div class="row py-5">
+                <div class="col-4"></div>
+                <div class="col-4 text-center">
+                    <i class="fa-solid fa-magnifying-glass fa-4x"></i>
+                    <p>No tienes anuncios</p>
+                    <div class="pt-3">
+                        <a href="/publish_buyer" type="button" class="btn btn-outline-warning btn-lg">Publicar</a>
+                    </div>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
