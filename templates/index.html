@@ -91,7 +91,7 @@
                 </div>
                 <div class="col-6 magenta text-center cuadrados pt-3" style="border-radius: 30px;">
                     <h2>Mafiance Coin</h2>
-                    <a href="/comercio" type="button" class="btn fmagenta btn-lg blanco">Comprar <i
+                    <a href="/criptos" type="button" class="btn fmagenta btn-lg blanco">Comprar <i
                             class="fa-solid fa-plus fa-1x"></i></a>
 
                     <a href="/index" type="button" class="btn fmagenta btn-lg blanco">Vender <i
@@ -115,13 +115,15 @@
                 {% for c in criptoactives %}
                 <div class="col-6 text-end">
                     <!--<i class="fa-brands fa-redhat fa-3x"></i>-->
-                    <img width="30" height="30" src="{{c['img']}}" alt="">
+                    <div class="pb-1">
+                        <img width="30" height="30" src="{{c['img']}}" alt="">
+                    </div>
                     <h6 class="amarillo">{{c['name']}}</h6>
                     <h3 class="magenta">{{c['currency']}}</h3>
                 </div>
                 <div class="col-6 mt-4">
-                    <h3>${{c['balance']}}</h3>
-
+                    <h4>${{c['balance']}}</h4>
+                    <p class="amarillo">ID de Wallet: ( {{c['_id']}} )</p>
                 </div>
                 <hr class="amarillo">
                 {% endfor %}

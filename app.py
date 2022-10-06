@@ -163,17 +163,22 @@ def orders_view():
     return render_template("orders.html")
 
 
-@app.route("/comercio")
-def trade_view():
+@app.route("/comercio/<id>")
+def trade_view(id):
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("comercio_cripto.html")
+
+    coin = db.coins.find_one({'_id': ObjectId(id)})
+    if not coin:
+        return abort(404)
+
+    return render_template("comercio_cripto.html", coin=coin)
 
 # flask necesita a la ruta (/add/MFC/<id>) para despues def add(id):
 
 
-@app.route("/add/MFC")
-def add():
+@app.route("/add/<acronym>")
+def add(acronym):
     if not session.get('user_id'):
         return redirect('/')
     # Cuando traemos un numero del formulario debemos convertirlo a numero porque viene como un string y no se
@@ -181,21 +186,25 @@ def add():
     amount = float(request.args.get('quantity'))
     userId = session.get('user_id')
 
+    wallet = db.wallets.find_one({'user_id': userId, 'currency': acronym})
+    if not wallet:
+        return abort(404)
+
     newTransaction = {
         'wallet_sender_id': 0,
-        'wallet_receiver_id': userId,
+        'wallet_receiver_id': str(wallet['_id']),
         'amount': amount,
-        'currency': "MFC",
+        'currency': acronym,
         'created_at': datetime.now()
     }
     db.transactions.insert_one(newTransaction)
     # Agregar y aumentar el balance.
-    wallet = db.wallets.find_one({'user_id': userId})
+
     print({'user_id': userId})
 
     if wallet:
         db.wallets.update_one(
-            {'user_id': userId},
+            {'user_id': userId, 'currency': acronym},
             {
                 '$set': {'balance': wallet['balance'] + amount}
             }
@@ -288,7 +297,8 @@ def update_wallet_receiver(id):
     if not senderWallet or not receiverWallet:
         return abort(404)
 
-    if senderWallet['balance'] <= float(0):
+    # tiene es que tener el saldo que va a mandar
+    if senderWallet['balance'] < float(transactionDocument['amount']):
         return redirect('/send?mensaje=Saldo insuficiente')
 
     db.wallets.update_one(
@@ -327,20 +337,19 @@ def criptos_view():
 
 @app.route("/addCripto/<id>")
 def addCripto(id):
-    coin_id = db.coins.find_one({'_id': ObjectId(id)})
-    if not coin_id:
+    coin = db.coins.find_one({'_id': ObjectId(id)})
+    if not coin:
         return abort(404)
-    coin_acronym = coin_id['acronym']
-    coin_img = coin_id['img']
-    coin_name = coin_id['name']
+
+    coin_acronym = coin['acronym']
+    coin_img = coin['img']
+    coin_name = coin['name']
     userId = session.get('user_id')
 
-    user_wallets = list(db.wallets.find(
-        {'user_id': userId, 'currency': coin_acronym}))  # PENDIENTE DE RESOLVER ##############
+    user_wallet = db.wallets.find_one(
+        {'user_id': userId, 'currency': coin_acronym})  # Acá verficamos si la wallet ya existe redirecciona. ########
 
-    if user_wallets[coin_acronym] == coin_acronym:
-        return redirect('/criptos?mensaje=Ya posees una billetera con esa cripto ambicioso...')
-    else:
+    if not user_wallet:  # Si no tiene wallet, se crea. y si tiene wallet, va a ir a comercio con la wallet y no creara otra
         newWallet = {
             'currency': str(coin_acronym),
             'balance': 0.0,
@@ -348,8 +357,9 @@ def addCripto(id):
             'name': coin_name,
             'user_id': userId,
         }
-    new_wallet_Id = db.wallets.insert_one(newWallet).inserted_id
-    return redirect('/new_cripto_completed/' + str(new_wallet_Id))
+        db.wallets.insert_one(newWallet)
+
+    return redirect('/comercio/' + id)
 
 
 @app.route("/new_cripto_completed/<id>")
@@ -362,3 +372,24 @@ def newCripto(id):
         return abort(404)
 
     return render_template("new_cripto_completed.html", new_wallet_cripto=new_wallet_cripto)
+
+
+@app.route("/anuncios")
+def anuncios_view():
+    if not session.get('user_id'):
+        return redirect('/')
+    return render_template("anuncios.html")
+
+
+@app.route("/publish_buyer")
+def publishBuyer_view():
+    if not session.get('user_id'):
+        return redirect('/')
+    return render_template("publish_buyer.html")
+
+
+@app.route("/publish_seller")
+def publishSeller_view():
+    if not session.get('user_id'):
+        return redirect('/')
+    return render_template("publish_seller.html")

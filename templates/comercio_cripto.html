@@ -43,7 +43,7 @@
 
 <body>
     <section class="negro blanco">
-        <form class="container" action="/add/MFC">
+        <form class="container" action="/add/{{coin['acronym']}}">
             <div class="row fmagenta py-3 pt-3" style="border-radius: 20px;">
                 <div class="col-4 pt-5 px-5">
                     <a href="/index" class="blanco text-decoration-none">
@@ -53,7 +53,7 @@
                 <div class="col-4 text-center">
                     <h3>Comprar cripto</h3>
                     <i class="fa-brands fa-redhat fa-4x"></i>
-                    <h6>1 MFC = 1 USDT</h6>
+                    <h6>1 {{coin['acronym']}} = 1 USDT</h6>
                 </div>
                 <div class="col-4 text-end pt-5 px-5" style="border-radius: 20px;">
                     <a href="/" class="text-decoration-none amarillo">
@@ -69,15 +69,15 @@
                 <div class="col-4 py-5 text-center">
                     <input class="form-control me-2 text-center" type="search" placeholder="0 USDT" name="quantity"
                         aria-label="#">
-                    <p class="amarillo pt-3">100.00 MFC - 100.00 USDT</p>
+                    <p class="amarillo pt-3">100.00 {{coin['acronym']}} - 100.00 USDT</p>
                 </div>
                 <div class="col-4 py-5">
-                    <a href="/" type="button" class="btn magenta btn-lg">⇵ MFC</a>
+                    <a href="/" type="button" class="btn magenta btn-lg">⇵ {{coin['acronym']}}</a>
                 </div>
             </div>
             <div class="row pb-5">
                 <div class="col text-center">
-                    <button type="submit" class="btn fmagenta btn-lg blanco">Comprar MFC 👑</button>
+                    <button type="submit" class="btn fmagenta btn-lg blanco">Comprar {{coin['acronym']}} 👑</button>
                 </div>
             </div>
         </form>
