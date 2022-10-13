@@ -78,7 +78,18 @@
 
 <body>
     <section class="negro blanco pb-5">
-        <form class="container" action="#">
+        {% if mensaje %}
+        <div class="container py-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert">
+                        {{mensaje}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <form class="container" action="/publish_buyer/create_ad">
             <div class="row fmagenta py-3 mb-4" style="border-radius: 20px;">
                 <div class="col-4">
                     <a href="/anuncios">
@@ -104,39 +115,40 @@
                 <div class="col-4 text-center">
                     <h6 class="amarillo">Activo</h6>
                     <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
-                        <input type="radio" class="btn-check" name="USDT" id="btnradio1" autocomplete="off" checked>
-                        <label class="btn btn-outline-light" for="btnradio1">USDT</label>
+                        <input type="radio" class="btn-check" name="coin" value="USDT" id="coin_1" autocomplete="off">
+                        <label class="btn btn-outline-light" for="coin_1">USDT</label>
 
-                        <input type="radio" class="btn-check" name="BTC" id="btnradio2" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio2">BTC</label>
+                        <input type="radio" class="btn-check" name="coin" value="BTC" id="coin_2" autocomplete="off">
+                        <label class="btn btn-outline-light" for="coin_2">BTC</label>
 
-                        <input type="radio" class="btn-check" name="BNB" id="btnradio3" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio3">BNB</label>
+                        <input type="radio" class="btn-check" name="coin" value="BNB" id="coin_3" autocomplete="off">
+                        <label class="btn btn-outline-light" for="coin_3">BNB</label>
 
-                        <input type="radio" class="btn-check" name="ETH" id="btnradio4" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio2">ETH</label>
+                        <input type="radio" class="btn-check" name="coin" value="ETH" id="coin_4" autocomplete="off">
+                        <label class="btn btn-outline-light" for="coin_4">ETH</label>
                     </div>
                 </div>
                 <div class="col-4">
                     <h6 class="amarillo">Moneda fiat</h6>
                     <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
-                        <input type="radio" class="btn-check" name="USDT" id="btnradio1" autocomplete="off" checked>
-                        <label class="btn btn-outline-light" for="btnradio1">ARS</label>
+                        <input type="radio" class="btn-check" name="fiat" value="ARS" id="fiat_1" autocomplete="off"
+                            checked>
+                        <label class="btn btn-outline-light" for="fiat_1">ARS</label>
 
-                        <input type="radio" class="btn-check" name="BTC" id="btnradio2" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio2">COP</label>
+                        <input type="radio" class="btn-check" name="fiat" value="COP" id="fiat_2" autocomplete="off">
+                        <label class="btn btn-outline-light" for="fiat_2">COP</label>
 
-                        <input type="radio" class="btn-check" name="BNB" id="btnradio3" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio3">EUR</label>
+                        <input type="radio" class="btn-check" name="fiat" value="EUR" id="fiat_3" autocomplete="off">
+                        <label class="btn btn-outline-light" for="fiat_3">EUR</label>
 
-                        <input type="radio" class="btn-check" name="ETH" id="btnradio4" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio2">USD</label>
+                        <input type="radio" class="btn-check" name="fiat" value="USD" id="fiat_4" autocomplete="off">
+                        <label class="btn btn-outline-light" for="fiat_4">USD</label>
 
-                        <input type="radio" class="btn-check" name="ETH" id="btnradio4" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio2">MXN</label>
+                        <input type="radio" class="btn-check" name="fiat" value="MXN" id="fiat_5" autocomplete="off">
+                        <label class="btn btn-outline-light" for="fiat_5">MXN</label>
 
-                        <input type="radio" class="btn-check" name="ETH" id="btnradio4" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio2">VES</label>
+                        <input type="radio" class="btn-check" name="fiat" value="VES" id="fiat_6" autocomplete="off">
+                        <label class="btn btn-outline-light" for="fiat_6">VES</label>
                     </div>
                 </div>
                 <div class="col-12 magenta pt-3">
@@ -145,9 +157,14 @@
                 <hr class="amarillo">
                 <div class="col-3">
                     <h6 class="amarillo">Tipo de precio</h6>
-                    <div class="btn-group">
-                        <a href="#" class="btn btn-outline-light btn-lg active" aria-current="page">Fijos</a>
-                        <a href="#" class="btn btn-outline-light btn-lg">Flotante</a>
+                    <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
+
+                        <input type="radio" class="btn-check" name="type" value="Fixed" id="type_1" autocomplete="off">
+                        <label class="btn btn-outline-light" for="type_1">Fijo</label>
+
+                        <input type="radio" class="btn-check" name="type" value="Float" id="type_2" autocomplete="off">
+                        <label class="btn btn-outline-light" for="type_2">Flotante</label>
+
                     </div>
                 </div>
                 <div class="col-2 text-end pt-4 mt-1">
@@ -155,7 +172,7 @@
                 </div>
                 <div class="col-2 text-center">
                     <h6 class="amarillo pb-2">Fijos</h6>
-                    <input class="form-control me-2 text-center" type="search" placeholder="0.0" name="price"
+                    <input class="form-control me-2 text-center" type="search" placeholder="0.0" name="fixed_price"
                         aria-label="#">
                 </div>
                 <div class="col-2 pt-4 mt-1">
@@ -163,31 +180,35 @@
                 </div>
                 <div class="col-3">
                     <h6 class="amarillo pb-2">Precio alto</h6>
-                    <h3>ARS$ 0.0</h3>
+                    <h3>ARS$ 290</h3>
                 </div>
             </div>
             <div class="row py-3 cuadradosM mb-4" style="border-radius: 20px;">
-                <div class="col-3">
-                    <h6 class="amarillo pb-2">Cantidad total</h6>
+                <div class="col-4 cuadradosA" style="border-radius: 20px;">
+                    <h4 class="amarillo pb-2">Cantidad total</h4>
                     <input class="form-control me-2" type="search" placeholder="Por favor, ingresa el monto (CURRENCY)"
                         name="quantity" aria-label="#">
                     <p class="pt-3">= (cantidad actualizada traducida) ARS</p>
+                    <p class="amarillo">Disponible:</p>
+                    {% for c in criptoactives %}
+                    <p>{{c['balance']}} {{c['currency']}}</p>
+                    {% endfor %}
                 </div>
-                <div class="col-4">
-                    <h6 class="amarillo pb-2">Límite de orden - Min</h6>
+                <div class="col-3 px-5">
+                    <h4 class="magenta pb-2">Limite - Mínino</h4>
                     <input class="form-control me-2" type="search" placeholder="0.0 (ARS)" name="limit_min"
                         aria-label="#">
                 </div>
                 <div class="col-1 text-center pt-5">
                     <h5>~</h5>
                 </div>
-                <div class="col-4">
-                    <h6 class="amarillo pb-2">Max</h6>
+                <div class="col-3 px-5">
+                    <h4 class="magenta pb-2">Limite - Máximo</h4>
                     <input class="form-control me-2" type="search" placeholder="0.0 (ARS)" name="limit_max"
                         aria-label="#">
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 pt-3">
                     <h4 class="magenta">Método de pago</h4>
                     <h5>Selecciona hasta 5 métodos.</h5>
                 </div>
@@ -195,28 +216,33 @@
                 <div class="row pb-2">
                     <div class="col-1 vertical-blue mt-2"></div>
                     <div class="col-2">
-                        <input type="radio" class="btn-check" name="mercado_pago" id="btnradio1" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio1">Mercado Pago</label>
+                        <input type="radio" class="btn-check" name="method" value="Mercado Pago" id="method_1"
+                            autocomplete="off">
+                        <label class="btn btn-outline-light" for="method_1">Mercado Pago</label>
                     </div>
                     <div class="col-1 vertical-green mt-2"></div>
                     <div class="col-2">
-                        <input type="radio" class="btn-check" name="lemon_cash" id="btnradio2" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio1">Lemon cash</label>
+                        <input type="radio" class="btn-check" name="method" value="Lemon Cash" id="method_2"
+                            autocomplete="off">
+                        <label class="btn btn-outline-light" for="method_2">Lemon cash</label>
                     </div>
                     <div class="col-1 vertical-violet mt-2"></div>
                     <div class="col-2">
-                        <input type="radio" class="btn-check" name="brubank" id="btnradio3" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio1">Brubank</label>
+                        <input type="radio" class="btn-check" name="method" value="Brubank" id="method_3"
+                            autocomplete="off">
+                        <label class="btn btn-outline-light" for="method_3">Brubank</label>
                     </div>
                     <div class="col-1 vertical-yellow mt-2"></div>
                     <div class="col-2">
-                        <input type="radio" class="btn-check" name="binance" id="btnradio4" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio1">Binance</label>
+                        <input type="radio" class="btn-check" name="method" value="Binance" id="method_4"
+                            autocomplete="off">
+                        <label class="btn btn-outline-light" for="method_4">Binance</label>
                     </div>
                     <div class="col-1 vertical-red mt-2"></div>
                     <div class="col-2">
-                        <input type="radio" class="btn-check" name="banco_nacional" id="btnradio5" autocomplete="off">
-                        <label class="btn btn-outline-light" for="btnradio1">Bancos Nacionales</label>
+                        <input type="radio" class="btn-check" name="method" value="Bancos Nacionales" id="method_5"
+                            autocomplete="off">
+                        <label class="btn btn-outline-light" for="method_5">Bancos Nacionales</label>
                     </div>
                 </div>
                 <hr class="amarillo">
@@ -226,18 +252,21 @@
                     </div>
                     <div class="col-6">
                         <div class="btn-group btn-group-lg" role="group" aria-label="Large button group">
-                            <input type="radio" class="btn-check" name="time_15" id="btnradio1" autocomplete="off"
-                                checked>
-                            <label class="btn btn-outline-warning" for="btnradio1">15 Min</label>
+                            <input type="radio" class="btn-check" name="time" value="15 minutos" id="time_1"
+                                autocomplete="off" checked>
+                            <label class="btn btn-outline-warning" for="time_1">15 Min</label>
 
-                            <input type="radio" class="btn-check" name="time_30" id="btnradio2" autocomplete="off">
-                            <label class="btn btn-outline-warning" for="btnradio2">30 Min</label>
+                            <input type="radio" class="btn-check" name="time" value="30 minutos" id="time_2"
+                                autocomplete="off">
+                            <label class="btn btn-outline-warning" for="time_2">30 Min</label>
 
-                            <input type="radio" class="btn-check" name="time_45" id="btnradio3" autocomplete="off">
-                            <label class="btn btn-outline-warning" for="btnradio3">45 Min</label>
+                            <input type="radio" class="btn-check" name="time" value="45 minutos" id="time_3"
+                                autocomplete="off">
+                            <label class="btn btn-outline-warning" for="time_3">45 Min</label>
 
-                            <input type="radio" class="btn-check" name="time_60" id="btnradio4" autocomplete="off">
-                            <label class="btn btn-outline-warning" for="btnradio2">1 H</label>
+                            <input type="radio" class="btn-check" name="time" value="60 minutos" id="time_4"
+                                autocomplete="off">
+                            <label class="btn btn-outline-warning" for="time_4">1 H</label>
                         </div>
                     </div>
                     <div class="col text-center py-3">
@@ -252,7 +281,8 @@
                     <h6 class="amarillo">Condiciones de la contraparte</h6>
                     <p class="magenta">Añadir requisitos para la contraparte, hara que tu anuncio sea bien pajuo.</p>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <input class="form-check-input" type="radio" name="costumer_registred_days"
+                            id="flexRadioDefault1">
                         <label class="form-check-label" for="flexRadioDefault1">
                             Registado día(s) atrás
                             <input class="form-control me-2" type="search" placeholder="0"
@@ -260,7 +290,8 @@
                         </label>
                     </div>
                     <div class="form-check pt-3">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                        <input class="form-check-input" type="radio" name="costumer_holdings_hystory"
+                            id="flexRadioDefault2">
                         <label class="form-check-label" for="flexRadioDefault2">
                             Holdings superiores a
                             <input class="form-control me-2" type="search" placeholder="0.0 MFC"
@@ -292,14 +323,16 @@
                     </div>
                     <hr class="magenta">
                     <div class="form-check pt-3">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                        <label class="form-check-label" for="flexRadioDefault2">
+                        <input class="form-check-input" type="radio" value="En linea" name="check_online_now"
+                            id="check_1">
+                        <label class="form-check-label" for="check_1">
                             En linea ahora mismo
                         </label>
                     </div>
                     <div class="form-check pt-3">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                        <label class="form-check-label" for="flexRadioDefault2">
+                        <input class="form-check-input" type="radio" value="Desconectado" name="check_later"
+                            id="check_2">
+                        <label class="form-check-label" for="check_2">
                             Desconectado, manualmente más tarde
                         </label>
                     </div>
@@ -308,8 +341,8 @@
             <div class="row">
                 <div class="col-4"></div>
                 <div class="col-4 text-center">
-                    <button class="btn btn-warning btn-lg"><i class="fa-brands fa-redhat fa-1x"></i> Publicar <i
-                            class="fa-brands fa-redhat fa-1x"></i></button>
+                    <button type="submit" class="btn btn-warning btn-lg"><i class="fa-brands fa-redhat fa-1x"></i>
+                        Publicar <i class="fa-brands fa-redhat fa-1x"></i></button>
                 </div>
                 <div class="col-4"></div>
             </div>

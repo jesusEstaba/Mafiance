@@ -37,6 +37,14 @@
         .amarillo {
             color: #ffc107;
         }
+
+        .rojo {
+            color: rgb(211, 6, 6);
+        }
+
+        .verde {
+            color: rgb(87, 255, 87);
+        }
     </style>
     <title>Anuncios | P2P </title>
 </head>
@@ -62,6 +70,7 @@
                     <i class="fa-solid fa-clock-rotate-left fa-3x"></i>
                 </div>
             </div>
+            {% if not ads %}
             <div class="row py-5">
                 <div class="col-4"></div>
                 <div class="col-4 text-center">
@@ -73,6 +82,28 @@
                 </div>
                 <div class="col-4"></div>
             </div>
+            {% endif %}
+            {% for a in ads %}
+            <div class="row pt-3">
+                <div class="col-4"></div>
+                <div class="col-4 cuadrados py-3" style="border-radius: 20px;">
+                    <!-- {% if not ads['status_1'] %}-->
+                    <h5 class="amarillo">{{a['status_1']}}</h5>
+                    <!-- {% endif %} -->
+                    <hr class="amarillo">
+                    <h4>
+                        <h4 class="">{{a['type']}}</h4> {{a['currency']}} con {{a['fiat']}}
+                    </h4>
+                    <h4>ARS$ {{a['high_price']}}</h4>
+                    <h4 class="amarillo">Cantidad total: {{a['amount']}} {{a['currency']}}</h4>
+                    <h6>Límite: {{a['limit_min']}} - {{a['limit_max']}} {{a['fiat']}}</h6>
+                    <!--Preguntar cómo registrar un color específico en la base de datos para un parámetro-->
+                    <h6>{{a['payment_method']}}</h6>
+                    <p class="magenta">Id del anuncio: {{a['_id']}}</p>
+                </div>
+                <div class="col-4"></div>
+            </div>
+            {% endfor %}
         </div>
     </section>
 </body>

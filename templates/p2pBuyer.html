@@ -30,8 +30,8 @@
             background-color: #8c509a;
         }
 
-        .cuadrados {
-            outline: 1px solid #d0d0d0;
+        .cuadradosA {
+            outline: 1px solid #ffc107;
         }
 
         .vertical-red {
@@ -100,7 +100,7 @@
                 </div>
             </div>
         </div>
-        <div class="container gris cuadrados blanco" style="border-radius: 20px;">
+        <div class="container cuadradosA blanco" style="border-radius: 20px;">
             <div class="row py-3 my-3">
                 <div class="col-2 pt-4">
                     <div class="btn-group ">
@@ -155,7 +155,7 @@
                     </div>
                 </div>
             </div>
-            <hr>
+            <hr class="magenta">
             <div class="row">
                 <div class="col-3 text-end">
                     <div class="dropdown-center">
@@ -206,45 +206,38 @@
                     <i class="fa-solid fa-filter fa-3x"></i>
                 </div>
             </div>
-            <hr>
+            <hr class="magenta">
+            {% for a in ads %}
             <div class="row">
                 <div class="col-3">
                     <p>(Icono de iniciales)</p>
                     <div class="col-12">
                         <p class="magenta">Precio</p>
-                        <h2>273.00 ARS</h2>
+                        <h2 class="amarillo">{{a['fixed_price']}} ${{a['fiat']}}</h2>
                         <div class="col magenta">
                             <p>Cantidad cripto
-                            <p class="blanco">499.60 USDT</p>
+                            <p class="blanco">{{a['amount']}} {{a['currency']}}</p>
                             </p>
                         </div>
                         <div class="col magenta">
                             <p>Límite
-                            <p class="blanco">ARS$ 100,000.00 - ARS$ 136,390.88</p>
+                            <p class="blanco">{{a['limit_min']}} ${{a['fiat']}} ⁓ {{a['limit_max']}} ${{a['fiat']}}</p>
                             </p>
                         </div>
                         <div class="col-12">
                             <div class="col-1 vertical-green">
                             </div>
                             <div class="col-6">
-                                <p>Efectivo</p>
-                            </div>
-                            <div class="col-1 vertical-blue">
-                            </div>
-                            <div class="col-6">
-                                <p>Mercado Pago</p>
-                            </div>
-                            <div class="col-1 vertical-red">
-                            </div>
-                            <div class="col-6">
-                                <p>Santander Rio</p>
+                                <p>{{a['payment_method']}}</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-2 amarillo">
-                    <h3>BitcomTxm</h3>
-                    <p>User: ID</p>
+                    {% for u in user %}
+                    <h3>{{u['user']}}</h3>
+                    {% endfor %}
+                    <p>User ID: {{a['user_id']}}</p>
                 </div>
                 <div class="col-1">
                     <i class="fa-solid fa-circle-check fa-3x"></i>
@@ -257,7 +250,8 @@
                     </div>
                 </div>
             </div>
-            <hr>
+            <hr class="magenta">
+            {% endfor %}
             <div class="row">
                 <div class="col-3">
                     <p>(Icono de iniciales)</p>

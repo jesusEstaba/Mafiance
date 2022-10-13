@@ -129,7 +129,13 @@ def profile_view():
 
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("profile.html")
+
+    userId = session.get('user_id')
+
+    user = db.users.find_one({'_id': ObjectId(userId)})
+    if not user:
+        return abort(404)
+    return render_template("profile.html", user=user)
 
 
 @app.route("/p2pBuyer")
@@ -137,18 +143,32 @@ def p2pBuyer_view():
 
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("p2pBuyer.html")
+
+    ads = list(db.advertisements.find({'type': 'Compra'}))
+
+    #user = db.users.find_one({'_id': ObjectId(int(ads['user_id']))})
+    #user = list(db.users.find({'_id': ObjectId(ads['user_id'])}))
+
+    #index = 0
+   # while index < len(user):
+    #new_list = user[index]
+    # index = index + 1
+
+   # print(new_list)
+
+    return render_template("p2pBuyer.html", ads=ads)
 
 
-@app.route("/p2pSeller")
+@ app.route("/p2pSeller")
 def p2pSeller_view():
 
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("p2pSeller.html")
+    ads = list(db.advertisements.find({'type': 'Venta'}))
+    return render_template("p2pSeller.html", ads=ads)
 
 
-@app.route("/divisa")
+@ app.route("/divisa")
 def divisa_view():
 
     if not session.get('user_id'):
@@ -156,14 +176,14 @@ def divisa_view():
     return render_template("divisa.html")
 
 
-@app.route("/orders")
+@ app.route("/orders")
 def orders_view():
     if not session.get('user_id'):
         return redirect('/')
     return render_template("orders.html")
 
 
-@app.route("/comercio/<id>")
+@ app.route("/comercio/<id>")
 def trade_view(id):
     if not session.get('user_id'):
         return redirect('/')
@@ -177,7 +197,7 @@ def trade_view(id):
 # flask necesita a la ruta (/add/MFC/<id>) para despues def add(id):
 
 
-@app.route("/add/<acronym>")
+@ app.route("/add/<acronym>")
 def add(acronym):
     if not session.get('user_id'):
         return redirect('/')
@@ -215,7 +235,7 @@ def add(acronym):
     return redirect("/index")
 
 
-@app.route("/send")
+@ app.route("/send")
 def send_view():
     if not session.get('user_id'):
         return redirect('/')
@@ -223,7 +243,7 @@ def send_view():
     return render_template("send.html", mensaje=mensaje)
 
 
-@app.route("/send/wallet")
+@ app.route("/send/wallet")
 def sendtoWallet():
     if not session.get('user_id'):
         return redirect('/')
@@ -262,12 +282,12 @@ def sendtoWallet():
     return redirect('/send_confirm/' + str(lastTransactionId))
 
 
-@app.route("/send_confirm/<id>")
+@ app.route("/send_confirm/<id>")
 def send_confirm_view(id):
     if not session.get('user_id'):
         return redirect('/')
     # FORMA DE ACCEDER AL ID DE UN DOCUMENTO CREADO A TRAVES DE UNA COLECCION A OTRA QUE COINCIDA CON EL ID.
-    # (Imprimimos al final en el html send_confirm el nombre del usuario a traves de la variable user_name)
+    # (Imprimimos al final en la vista: send_confirm.html el nombre del usuario a traves de la variable user_name)
     transactionDocument = db.transactions.find_one({'_id': ObjectId(id)})
     if not(transactionDocument):
         return abort(404)
@@ -282,7 +302,7 @@ def send_confirm_view(id):
     return render_template("send_confirm.html", transactionDocument=transactionDocument, user_name=user_name)
 
 
-@app.route("/update_wallet_receiver/<id>")
+@ app.route("/update_wallet_receiver/<id>")
 def update_wallet_receiver(id):
     if not session.get('user_id'):
         return redirect('/')
@@ -317,7 +337,7 @@ def update_wallet_receiver(id):
     return redirect('/completed/' + str(transactionDocument['_id']))
 
 
-@app.route("/completed/<id>")
+@ app.route("/completed/<id>")
 def completed_view(id):
     if not session.get('user_id'):
         return redirect('/')
@@ -325,7 +345,7 @@ def completed_view(id):
     return render_template("completed.html", transactionDocument=transactionDocument)
 
 
-@app.route("/criptos")
+@ app.route("/criptos")
 def criptos_view():
     if not session.get('user_id'):
         return redirect('/')
@@ -335,7 +355,7 @@ def criptos_view():
     return render_template("criptos.html", mensaje=mensaje, coins=coins)
 
 
-@app.route("/addCripto/<id>")
+@ app.route("/addCripto/<id>")
 def addCripto(id):
     coin = db.coins.find_one({'_id': ObjectId(id)})
     if not coin:
@@ -362,7 +382,7 @@ def addCripto(id):
     return redirect('/comercio/' + id)
 
 
-@app.route("/new_cripto_completed/<id>")
+@ app.route("/new_cripto_completed/<id>")
 def newCripto(id):
     if not session.get('user_id'):
         return redirect('/')
@@ -373,23 +393,150 @@ def newCripto(id):
 
     return render_template("new_cripto_completed.html", new_wallet_cripto=new_wallet_cripto)
 
+######################### Acá creamos los anuncios ########################
 
-@app.route("/anuncios")
+
+@ app.route("/anuncios")
 def anuncios_view():
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("anuncios.html")
+
+    userId = session.get('user_id')
+    ads = list(db.advertisements.find({'user_id': userId}))
+
+    return render_template("anuncios.html", ads=ads)
 
 
-@app.route("/publish_buyer")
+@ app.route("/publish_buyer")
 def publishBuyer_view():
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("publish_buyer.html")
+    mensaje = request.args.get('mensaje')
+    userId = session.get('user_id')
+    criptoactives = list(db.wallets.find({'user_id': userId}))
+    return render_template("publish_buyer.html", mensaje=mensaje, criptoactives=criptoactives)
 
 
-@app.route("/publish_seller")
+@ app.route("/publish_seller")
 def publishSeller_view():
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("publish_seller.html")
+    mensaje = request.args.get('mensaje')
+
+    return render_template("publish_seller.html", mensaje=mensaje)
+
+
+@ app.route("/publish_buyer/create_ad")
+def create_buy_ad():
+    if not session.get('user_id'):
+        return redirect('/')
+
+    coin = request.args.get('coin')
+    fiat = request.args.get('fiat')
+    type = request.args.get('type')
+    fixed_price = request.args.get('fixed_price')
+    quantity = request.args.get('quantity')
+    limit_min = request.args.get('limit_min')
+    limit_max = request.args.get('limit_max')
+    payment_method = request.args.get('method')
+    time = request.args.get('time')
+    costumer_registred_days = request.args.get('costumer_registred_days')
+    costumer_holdings_hystory = request.args.get('costumer_holdings_hystory')
+    terms = request.args.get('terms')
+    message = request.args.get('message')
+    check_online_now = request.args.get('check_online_now')
+    check_later = request.args.get('check_later')
+    userId = session.get('user_id')
+
+    if coin == "" or fiat == "" or type == "" or fixed_price == "" or quantity == "" or limit_min == "" or limit_max == "" or payment_method == "" or time == "" or check_online_now == "" or check_later == "":
+        return redirect('/publish_buyer?mensaje=Tienes campos vacíos')
+
+    criptoactives = db.wallets.find_one({'user_id': userId})
+
+    # if float(quantity) > float(criptoactives['balance']):
+    # return redirect('/publish_buyer?mensaje=La cantidad introducida excede el balance disponible')
+
+    final_limit = 1000000
+
+    if float(limit_max) >= float(final_limit):
+        return redirect('/publish_buyer?mensaje=El límite máximo no debe exceder 1000000.00')
+
+    final_limit_min = 0
+
+    if float(limit_min) <= float(final_limit_min):
+        return redirect('/publish_buyer?mensaje=El límite mínimo no puede ser 0')
+
+    newAd = {
+        'type': "Compra",
+        'currency': coin,
+        'fiat': fiat,
+        'exchange_type': type,
+        'fixed_price': float(fixed_price),
+        'float_price': 0,
+        'high_price': 290,
+        'amount': float(quantity),
+        'limit_min': float(limit_min),
+        'limit_max': float(limit_max),
+        'payment_method': payment_method,
+        'time': time,
+        'costumer_registred_days': costumer_registred_days,
+        'costumer_holdings_hystory': costumer_holdings_hystory,
+        'terms': terms,
+        'message': message,
+        'status_1': check_online_now,
+        'status_2': check_later,
+        'user_id': userId
+    }
+    db.advertisements.insert_one(newAd).inserted_id
+
+    return redirect('/anuncios')
+
+
+@ app.route("/publish_seller/create_ad")
+def create_sell_ad():
+    if not session.get('user_id'):
+        return redirect('/')
+
+    coin = request.args.get('coin')
+    fiat = request.args.get('fiat')
+    type = request.args.get('type')
+    fixed_price = request.args.get('fixed_price')
+    quantity = request.args.get('quantity')
+    limit_min = request.args.get('limit_min')
+    limit_max = request.args.get('limit_max')
+    payment_method = request.args.get('method')
+    time = request.args.get('time')
+    costumer_registred_days = request.args.get('costumer_registred_days')
+    costumer_holdings_hystory = request.args.get('costumer_holdings_hystory')
+    terms = request.args.get('terms')
+    message = request.args.get('message')
+    check_online_now = request.args.get('check_online_now')
+    check_later = request.args.get('check_later')
+    userId = session.get('user_id')
+
+    if coin == "" or fiat == "" or type == "" or fixed_price == "" or quantity == "" or limit_min == "" or limit_max == "" or payment_method == "" or time == "" or check_online_now == "" or check_later == "":
+        return redirect('/publish_buyer?mensaje=Tienes campos vacíos')
+    newAd = {
+        'type': "Venta",
+        'currency': coin,
+        'fiat': fiat,
+        'exchange_type': type,
+        'fixed_price': float(fixed_price),
+        'float_price': 0,
+        'high_price': 290,
+        'amount': float(quantity),
+        'limit_min': float(limit_min),
+        'limit_max': float(limit_max),
+        'payment_method': payment_method,
+        'time': time,
+        'costumer_registred_days': costumer_registred_days,
+        'costumer_holdings_hystory': costumer_holdings_hystory,
+        'terms': terms,
+        'message': message,
+        'status_1': check_online_now,
+        'status_2': check_later,
+        'user_id': userId
+    }
+    db.advertisements.insert_one(newAd).inserted_id
+
+    return redirect('/anuncios')
