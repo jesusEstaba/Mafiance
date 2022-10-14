@@ -145,18 +145,16 @@ def p2pBuyer_view():
         return redirect('/')
 
     ads = list(db.advertisements.find({'type': 'Compra'}))
+    banks = list(db.banks.find({}))
+####### Forma de agregar un dato nuevo a la lista de la coleccion ads. para type error de listas por indices etc. #######
+# Vease la vista P2PBuyer.html donde ajustamos el dato de nombre. Acá buscamos con el id en otra colección
+    for ad in ads:
+        user = db.users.find_one({'_id': ObjectId(ad['user_id'])})
+        method = db.banks.find_one({'_id': ObjectId(ad['payment_method'])})
+        ad['user'] = user
+        ad['method'] = method
 
-    #user = db.users.find_one({'_id': ObjectId(int(ads['user_id']))})
-    #user = list(db.users.find({'_id': ObjectId(ads['user_id'])}))
-
-    #index = 0
-   # while index < len(user):
-    #new_list = user[index]
-    # index = index + 1
-
-   # print(new_list)
-
-    return render_template("p2pBuyer.html", ads=ads)
+    return render_template("p2pBuyer.html", ads=ads, banks=banks)
 
 
 @ app.route("/p2pSeller")
@@ -164,8 +162,40 @@ def p2pSeller_view():
 
     if not session.get('user_id'):
         return redirect('/')
+
     ads = list(db.advertisements.find({'type': 'Venta'}))
-    return render_template("p2pSeller.html", ads=ads)
+    banks = list(db.banks.find({}))
+
+    for ad in ads:
+        user = db.users.find_one({'_id': ObjectId(ad['user_id'])})
+        method = db.banks.find_one({'_id': ObjectId(ad['payment_method'])})
+        ad['user'] = user
+        ad['method'] = method
+
+    return render_template("p2pSeller.html", ads=ads, banks=banks)
+
+
+@app.route("/ad_selected/<id>")
+def ad_selected(id):
+    if not session.get('user_id'):
+        return redirect('/')
+
+    ad = db.advertisements.find_one({'_id': ObjectId(id)})
+
+    return render_template("ad_selected.html", ad=ad)
+
+
+@ app.route("/orders")
+def orders_view():
+    if not session.get('user_id'):
+        return redirect('/')
+    return render_template("orders.html")
+
+
+@app.route("/orders/create")
+def orders_creation():
+    if not session.get('user_id'):
+        return redirect('/')
 
 
 @ app.route("/divisa")
@@ -174,13 +204,6 @@ def divisa_view():
     if not session.get('user_id'):
         return redirect('/')
     return render_template("divisa.html")
-
-
-@ app.route("/orders")
-def orders_view():
-    if not session.get('user_id'):
-        return redirect('/')
-    return render_template("orders.html")
 
 
 @ app.route("/comercio/<id>")
@@ -404,6 +427,9 @@ def anuncios_view():
     userId = session.get('user_id')
     ads = list(db.advertisements.find({'user_id': userId}))
 
+    for bank in ads:
+        method = db.banks.find_one({'_id': ObjectId(bank['payment_method'])})
+        bank['method'] = method
     return render_template("anuncios.html", ads=ads)
 
 
@@ -411,19 +437,24 @@ def anuncios_view():
 def publishBuyer_view():
     if not session.get('user_id'):
         return redirect('/')
+
     mensaje = request.args.get('mensaje')
     userId = session.get('user_id')
     criptoactives = list(db.wallets.find({'user_id': userId}))
-    return render_template("publish_buyer.html", mensaje=mensaje, criptoactives=criptoactives)
+    banks = list(db.banks.find({}))
+    return render_template("publish_buyer.html", mensaje=mensaje, criptoactives=criptoactives, banks=banks)
 
 
 @ app.route("/publish_seller")
 def publishSeller_view():
     if not session.get('user_id'):
         return redirect('/')
-    mensaje = request.args.get('mensaje')
 
-    return render_template("publish_seller.html", mensaje=mensaje)
+    mensaje = request.args.get('mensaje')
+    userId = session.get('user_id')
+    criptoactives = list(db.wallets.find({'user_id': userId}))
+    banks = list(db.banks.find({}))
+    return render_template("publish_seller.html", mensaje=mensaje, criptoactives=criptoactives, banks=banks)
 
 
 @ app.route("/publish_buyer/create_ad")
@@ -444,17 +475,18 @@ def create_buy_ad():
     costumer_holdings_hystory = request.args.get('costumer_holdings_hystory')
     terms = request.args.get('terms')
     message = request.args.get('message')
-    check_online_now = request.args.get('check_online_now')
-    check_later = request.args.get('check_later')
+    # El estado del anuncio le ponemos el mismo name a los dos radios de la vista publish_buyer.html
+    status_online = request.args.get('status_online')
     userId = session.get('user_id')
 
-    if coin == "" or fiat == "" or type == "" or fixed_price == "" or quantity == "" or limit_min == "" or limit_max == "" or payment_method == "" or time == "" or check_online_now == "" or check_later == "":
+    if coin == "" or fiat == "" or type == "" or fixed_price == "" or quantity == "" or limit_min == "" or limit_max == "" or payment_method == "" or time == "" or status_online == "":
         return redirect('/publish_buyer?mensaje=Tienes campos vacíos')
 
-    criptoactives = db.wallets.find_one({'user_id': userId})
+    # Filtramos la wallet del usuario para hacer la condicion de si posee el balance que dice tener y con el tipo de moneda que eligió.
+    user_wallet = db.wallets.find_one({'user_id': userId, 'currency': coin})
 
-    # if float(quantity) > float(criptoactives['balance']):
-    # return redirect('/publish_buyer?mensaje=La cantidad introducida excede el balance disponible')
+    if float(quantity) > float(user_wallet['balance']):
+        return redirect('/publish_buyer?mensaje=La cantidad introducida excede el balance disponible')
 
     final_limit = 1000000
 
@@ -465,6 +497,9 @@ def create_buy_ad():
 
     if float(limit_min) <= float(final_limit_min):
         return redirect('/publish_buyer?mensaje=El límite mínimo no puede ser 0')
+
+    if len(terms) >= 200:
+        return redirect('/publish_buyer?mensaje=Los términos no deben superar los 200 caracteres')
 
     newAd = {
         'type': "Compra",
@@ -483,13 +518,23 @@ def create_buy_ad():
         'costumer_holdings_hystory': costumer_holdings_hystory,
         'terms': terms,
         'message': message,
-        'status_1': check_online_now,
-        'status_2': check_later,
+        'status_online': status_online,
         'user_id': userId
     }
     db.advertisements.insert_one(newAd).inserted_id
 
     return redirect('/anuncios')
+
+###### Paso a paso cómo hacer que una colección guarde un color y se seleccione más de un elemento: #########
+# 1. Creamos la coleccion de bancos por ejemplo: Llamada Banks en Mongo Atlas.
+# 2. Le creamos el campo de su name y de color. luego pegamos el numero hexadecimal deseado o de rgb(12,12,12).
+# 3. En la vista publish_buyer.html imprimimos  banks = list(db.banks.find({})) cada elemento en un for.
+# 5. Usamos vertical-color en Css y forzamos el style con la variable style="background-color:{{bank['color']}};"
+# 6. el input de los bancos quedaria asi: (Cada uno tendrá su respectivo _id diferente)
+# <input type="radio" class="btn-check" name="method" value="{{bank['_id']}}"
+    # id="method_{{bank['_id']}}" autocomplete="off">
+# <label class="btn btn-outline-light" for="method_{{bank['_id']}}">{{bank['name']}}</label>
+# 7.
 
 
 @ app.route("/publish_seller/create_ad")
@@ -510,12 +555,30 @@ def create_sell_ad():
     costumer_holdings_hystory = request.args.get('costumer_holdings_hystory')
     terms = request.args.get('terms')
     message = request.args.get('message')
-    check_online_now = request.args.get('check_online_now')
-    check_later = request.args.get('check_later')
+    status_online = request.args.get('status_online')
     userId = session.get('user_id')
 
-    if coin == "" or fiat == "" or type == "" or fixed_price == "" or quantity == "" or limit_min == "" or limit_max == "" or payment_method == "" or time == "" or check_online_now == "" or check_later == "":
+    if coin == "" or fiat == "" or type == "" or fixed_price == "" or quantity == "" or limit_min == "" or limit_max == "" or payment_method == "" or time == "" or status_online == "":
         return redirect('/publish_buyer?mensaje=Tienes campos vacíos')
+
+    final_limit = 1000000
+
+    if float(limit_max) >= float(final_limit):
+        return redirect('/publish_buyer?mensaje=El límite máximo no debe exceder 1000000.00')
+
+    final_limit_min = 0
+
+    if float(limit_min) <= float(final_limit_min):
+        return redirect('/publish_buyer?mensaje=El límite mínimo no puede ser 0')
+
+    user_wallet = db.wallets.find_one({'user_id': userId, 'currency': coin})
+
+    if float(quantity) > float(user_wallet['balance']):
+        return redirect('/publish_buyer?mensaje=La cantidad introducida excede el balance disponible')
+
+    if len(terms) >= 200:
+        return redirect('/publish_buyer?mensaje=Los términos no deben superar los 200 caracteres')
+
     newAd = {
         'type': "Venta",
         'currency': coin,
@@ -533,8 +596,7 @@ def create_sell_ad():
         'costumer_holdings_hystory': costumer_holdings_hystory,
         'terms': terms,
         'message': message,
-        'status_1': check_online_now,
-        'status_2': check_later,
+        'status_online': status_online,
         'user_id': userId
     }
     db.advertisements.insert_one(newAd).inserted_id

@@ -34,29 +34,14 @@
             outline: 1px solid #ffc107;
         }
 
-        .vertical-red {
-            width: 3px;
-            height: 20px;
-            background-color: red;
-            border-radius: 80px;
-        }
-
-        .vertical-blue {
-            width: 3px;
-            height: 20px;
-            background-color: rgb(76, 151, 255);
-            border-radius: 80px;
-        }
-
-        .vertical-green {
-            width: 3px;
-            height: 20px;
-            background-color: rgb(87, 255, 87);
-            border-radius: 80px;
-        }
-
         .amarillo {
             color: #ffc107;
+        }
+
+        .vertical-color {
+            width: 0.5px;
+            height: 20px;
+            border-radius: 30px;
         }
     </style>
     <title>Comercio P2P | Comprar </title>
@@ -224,29 +209,27 @@
                             <p class="blanco">{{a['limit_min']}} ${{a['fiat']}} ⁓ {{a['limit_max']}} ${{a['fiat']}}</p>
                             </p>
                         </div>
-                        <div class="col-12">
-                            <div class="col-1 vertical-green">
-                            </div>
-                            <div class="col-6">
-                                <p>{{a['payment_method']}}</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="col-2 amarillo">
-                    {% for u in user %}
-                    <h3>{{u['user']}}</h3>
-                    {% endfor %}
+                    <h3>{{a['user']['user']}}</h3>
                     <p>User ID: {{a['user_id']}}</p>
+                    <div class="col d-flex">
+                        <div class="col-1 vertical-color mt-2" style="background-color:{{a['method']['color']}};">
+                        </div>
+                        <div class="col-3 px-3" style="color:{{a['method']['color']}};">
+                            <p>{{a['method']['name']}}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-1">
+                <div class="col-2">
                     <i class="fa-solid fa-circle-check fa-3x"></i>
                 </div>
                 <div class="col-2 magenta">
                     <p>120 Órdenes | 81.10%</p>
                     <div class="pt-5"></div>
                     <div class="pt-5">
-                        <a href="/" type="button" class="btn fmagenta blanco btn-lg">Comprar</a>
+                        <a href="/ad_selected/{{a['_id']}}" type="button" class="btn fmagenta blanco btn-lg">Comprar</a>
                     </div>
                 </div>
             </div>

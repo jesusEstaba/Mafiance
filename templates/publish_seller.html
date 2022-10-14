@@ -38,38 +38,9 @@
             color: #ffc107;
         }
 
-        .vertical-blue {
+        .vertical-color {
             width: 0.5px;
             height: 20px;
-            background-color: rgb(76, 151, 255);
-            border-radius: 30px;
-        }
-
-        .vertical-green {
-            width: 0.5px;
-            height: 20px;
-            background-color: rgb(87, 255, 87);
-            border-radius: 30px;
-        }
-
-        .vertical-violet {
-            width: 0.5px;
-            height: 20px;
-            background-color: rgb(119, 6, 211);
-            border-radius: 30px;
-        }
-
-        .vertical-red {
-            width: 0.5px;
-            height: 20px;
-            background-color: rgb(211, 6, 6);
-            border-radius: 30px;
-        }
-
-        .vertical-yellow {
-            width: 0.5px;
-            height: 20px;
-            background-color: rgb(220, 185, 27);
             border-radius: 30px;
         }
     </style>
@@ -107,8 +78,9 @@
                 <div class="col-4">
                     <h6 class="amarillo">Establecer tipo</h6>
                     <div class="btn-group">
-                        <a href="/publish_buyer" class="btn btn-outline-light btn-lg" aria-current="page">Comprar</a>
-                        <a href="/publish_seller" class="btn btn-outline-light btn-lg active">Vender</a>
+                        <a href="/publish_buyer" class="btn btn-outline-light btn-lg">Comprar</a>
+                        <a href="/publish_seller" class="btn btn-outline-light btn-lg active"
+                            aria-current="page">Vender</a>
                     </div>
                 </div>
                 <div class="col-4 text-center">
@@ -188,6 +160,10 @@
                     <input class="form-control me-2" type="search" placeholder="Por favor, ingresa el monto (CURRENCY)"
                         name="quantity" aria-label="#">
                     <p class="pt-3">= (cantidad actualizada traducida) ARS</p>
+                    <p class="amarillo">Disponible:</p>
+                    {% for c in criptoactives %}
+                    <p>{{c['balance']}} {{c['currency']}}</p>
+                    {% endfor %}
                 </div>
                 <div class="col-3 px-5">
                     <h4 class="magenta pb-2">Limite - Mínino</h4>
@@ -208,36 +184,14 @@
                 </div>
                 <hr class="amarillo">
                 <div class="row pb-2">
-                    <div class="col-1 vertical-blue mt-2"></div>
+                    {% for bank in banks %}
+                    <div class="col-1 vertical-color mt-2" style="background-color:{{bank['color']}};"></div>
                     <div class="col-2">
-                        <input type="radio" class="btn-check" name="method" value="Mercado Pago" id="method_1"
-                            autocomplete="off">
-                        <label class="btn btn-outline-light" for="method_1">Mercado Pago</label>
+                        <input type="radio" class="btn-check" name="method" value="{{bank['_id']}}"
+                            id="method_{{bank['_id']}}" autocomplete="off">
+                        <label class="btn btn-outline-light" for="method_{{bank['_id']}}">{{bank['name']}}</label>
                     </div>
-                    <div class="col-1 vertical-green mt-2"></div>
-                    <div class="col-2">
-                        <input type="radio" class="btn-check" name="method" value="Lemon Cash" id="method_2"
-                            autocomplete="off">
-                        <label class="btn btn-outline-light" for="method_2">Lemon cash</label>
-                    </div>
-                    <div class="col-1 vertical-violet mt-2"></div>
-                    <div class="col-2">
-                        <input type="radio" class="btn-check" name="method" value="Brubank" id="method_3"
-                            autocomplete="off">
-                        <label class="btn btn-outline-light" for="method_3">Brubank</label>
-                    </div>
-                    <div class="col-1 vertical-yellow mt-2"></div>
-                    <div class="col-2">
-                        <input type="radio" class="btn-check" name="method" value="Binance" id="method_4"
-                            autocomplete="off">
-                        <label class="btn btn-outline-light" for="method_4">Binance</label>
-                    </div>
-                    <div class="col-1 vertical-red mt-2"></div>
-                    <div class="col-2">
-                        <input type="radio" class="btn-check" name="method" value="Bancos Nacionales" id="method_5"
-                            autocomplete="off">
-                        <label class="btn btn-outline-light" for="method_5">Bancos Nacionales</label>
-                    </div>
+                    {% endfor %}
                 </div>
                 <hr class="amarillo">
                 <div class="row">
@@ -270,7 +224,7 @@
                 </div>
             </div>
             <div class="row mb-4">
-                <!--Hacer que los check se puedan colocar de a dos-->
+
                 <div class="col-4 py-3 cuadradosA" style="border-radius: 20px;">
                     <h6 class="amarillo">Condiciones de la contraparte</h6>
                     <p class="magenta">Añadir requisitos para la contraparte, hara que tu anuncio sea bien pajuo.</p>
@@ -294,7 +248,6 @@
                     </div>
                 </div>
                 <div class="col-4 py-3 cuadradosA" style="border-radius: 20px;">
-                    <!--Hacer límite de carácteres-->
                     <h6 class="amarillo">Términos (opcional)</h6>
                     <input class="form-control me-2" type="search"
                         placeholder="Los términos serán mostrados a tu contraparte, así que juega limpio." name="terms"
@@ -317,14 +270,13 @@
                     </div>
                     <hr class="magenta">
                     <div class="form-check pt-3">
-                        <input class="form-check-input" type="radio" value="En linea" name="check_online_now"
-                            id="check_1">
+                        <input class="form-check-input" type="radio" value="En linea" name="status_online" id="check_1">
                         <label class="form-check-label" for="check_1">
                             En linea ahora mismo
                         </label>
                     </div>
                     <div class="form-check pt-3">
-                        <input class="form-check-input" type="radio" value="Desconectado" name="check_later"
+                        <input class="form-check-input" type="radio" value="Desconectado" name="status_online"
                             id="check_2">
                         <label class="form-check-label" for="check_2">
                             Desconectado, manualmente más tarde
