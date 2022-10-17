@@ -175,27 +175,95 @@ def p2pSeller_view():
     return render_template("p2pSeller.html", ads=ads, banks=banks)
 
 
-@app.route("/ad_selected/<id>")
-def ad_selected(id):
+@app.route("/buy_selected_ad/<id>")
+def buy_selected(id):
     if not session.get('user_id'):
         return redirect('/')
 
     ad = db.advertisements.find_one({'_id': ObjectId(id)})
+    user = db.users.find_one({'_id': ObjectId(ad['user_id'])})
+    method = db.banks.find_one({'_id': ObjectId(ad['payment_method'])})
+    banks = list(db.banks.find({}))
+    mensaje = request.args.get('mensaje')
 
-    return render_template("ad_selected.html", ad=ad)
+    return render_template("buy_selected_ad.html", ad=ad, user=user, method=method, mensaje=mensaje, banks=banks)
+
+
+@app.route("/create/order/<id>")
+def orders_creation(id):
+
+    if not session.get('user_id'):
+        return redirect('/')
+
+    ad = db.advertisements.find_one({'_id': ObjectId(id)})
+    user = db.users.find_one({'_id': ObjectId(ad['user_id'])})
+
+    if not ad:
+        return abort(404)
+
+    quantity = float(request.args.get('client_quantity'))
+    client_selected_method = request.args.get('method')
+
+    if quantity == "":
+        return redirect('/buy_selected_ad?mensaje=Ingresa una cantidad')
+
+    order_type = ad['type']
+    order_currency = ad['currency']
+    order_fiat = ad['fiat']
+    advertiser_amount = ad['amount']
+    user_name = user['user']
+    order_exchange_type = ad['exchange_type']
+    order_fixed_price = ad['fixed_price']
+    order_float_price = ad['float_price']
+    userId = session.get('user_id')
+
+    user_order = db.orders.find_one(
+        {'user_id': userId, 'currency': order_currency, 'client_quantity': quantity})  # Acá verficamos si la orden ya existe redirecciona. ########
+
+    # Si no tiene order, se crea. y si tiene order, va a ir a index y no creara otra.
+    if not user_order:
+        new_order = {
+            'status': "Pendiente",
+            'type': order_type,
+            'client_quantity': quantity,
+            'currency': order_currency,
+            'fiat': order_fiat,
+            'advertiser_amount': advertiser_amount,
+            'exchange_type': order_exchange_type,
+            'fixed_price': order_fixed_price,
+            'float_price': order_float_price,
+            'valor_al_cambio': "por definir",
+            'client_payment_method': client_selected_method,
+            'advertiser_name': user_name,
+            'created_at': datetime.now(),
+            'user_id': userId,
+        }
+    last_order_id = db.orders.insert_one(new_order).inserted_id
+
+    return redirect('/index' + str(last_order_id))
+
+
+@app.route("/sell_selected_ad/<id>")
+def sell_selected(id):
+    if not session.get('user_id'):
+        return redirect('/')
+
+    ad = db.advertisements.find_one({'_id': ObjectId(id)})
+    user = db.users.find_one({'_id': ObjectId(ad['user_id'])})
+    method = db.banks.find_one({'_id': ObjectId(ad['payment_method'])})
+    banks = list(db.banks.find({}))
+    mensaje = request.args.get('mensaje')
+    return render_template("sell_selected_ad.html", ad=ad, user=user, method=method, banks=banks, mensaje=mensaje)
 
 
 @ app.route("/orders")
 def orders_view():
     if not session.get('user_id'):
         return redirect('/')
-    return render_template("orders.html")
 
-
-@app.route("/orders/create")
-def orders_creation():
-    if not session.get('user_id'):
-        return redirect('/')
+    userId = session.get('user_id')
+    orders = list(db.orders.find({'_id': userId}))
+    return render_template("orders.html", orders=orders)
 
 
 @ app.route("/divisa")
