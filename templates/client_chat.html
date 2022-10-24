@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="icon" href="https://i.imgur.com/iYKmUvA.png">
+    <script src="https://kit.fontawesome.com/68d8235f51.js" crossorigin="anonymous"></script>
+    <style type="text/css">
+        .blanco {
+            color: white;
+        }
+
+        .negro {
+            background-color: #1f1e1e;
+        }
+
+        .magenta {
+            color: #b96acb;
+        }
+
+        .bg-magenta {
+            background: linear-gradient(42deg, rgba(185, 106, 203, 1) 35%, rgba(65, 11, 74, 1) 100%);
+        }
+
+        .fmagenta {
+            background-color: #8c509a;
+        }
+
+        .amarillo {
+            color: #ffc107;
+        }
+
+        .bg-amarillo {
+            background: linear-gradient(70deg, rgba(110, 88, 20, 1) 1%, rgba(255, 193, 7, 1) 100%);
+        }
+
+        .cuadradosA {
+            outline: 1px solid #ffc107;
+        }
+
+        .cuadradosM {
+            outline: 1px solid #b96acb;
+        }
+    </style>
+    <title>Orden en proceso | Mafiance</title>
+</head>
+
+<body>
+    <section class="negro blanco pb-5">
+        <form class="container" action="/message/create">
+            <div class="row py-3">
+                <div class="col-4">
+                    <a href="/orders">
+                        <i class="fa-solid fa-xmark fa-3x amarillo"></i>
+                    </a>
+                </div>
+                <div class=" col-4 text-center d-flex">
+                    <i class="fa-solid fa-user-secret fa-3x pb-2 magenta px-1 mx-5"></i>
+                    <h3 class="pt-2 px-2">{{order['advertiser_name']}}</h3>
+                    <i class="fa-solid fa-user-secret fa-3x pb-2 magenta px-1 mx-5"></i>
+                </div>
+                <div class="col-4 text-end pt-2">
+                    <h3 class="amarillo">Chat Activo</h3>
+                </div>
+            </div>
+            <div class="row cuadradosA py-3" style="border-radius: 20px;">
+                <div class="col-4">
+                    <h3 style="color: rgb(255, 0, 0)">{{order['status']}}</h3>
+                    <h6>Monto: {{order['client_quantity']}}</h6>
+                </div>
+                <div class="col-4 text-center">
+                    <button type="submit" class="btn btn-warning btn-lg">Marcar Pagado</button>
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <hr class="magenta">
+            <div class="row">
+                <div class="col cuadradosM py-3">
+                    <input type="hidden" name="order_id" value="{{order['_id']}}" />
+                    <!--COMO HACER UN CHAT PAPA UN LINK MEGA-->
+                    {% for m in message %}
+                    <div class="row">
+                        {% if userId != (m['user']['_id'] | string) %}
+                        <div class="col-7">
+                            <div class="bg-amarillo rounded p-1 mb-3">
+                                <p class="m-0 pb-1">
+                                    <small class="fw-bold">{{m['user']['user']}}</small>
+                                </p>
+                                <p class="m-0">- {{m['message']}}</p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="col-5"></div>
+                        <div class="col-7">
+                            <div class="bg-magenta rounded p-1 mb-3">
+                                <p class="m-0">- {{m['message']}}</p>
+                            </div>
+
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <!--######################################################-->
+            </div>
+            <div class="row py-3">
+                <div class="col-2"></div>
+                <div class="col-1">
+                    <i class="fa-solid fa-circle-plus fa-2x"></i>
+                </div>
+                <div class="col-5">
+                    <input class="form-control me-2" type="search" name="message" placeholder="Escribe tu mensaje">
+                </div>
+                <div class="col-1 pt-2">
+                    <i class="fa-solid fa-message fa-2x"></i>
+                </div>
+                <div class="col-1">
+                    <button type="submit" class="btn fa-solid fa-paper-plane fa-2x blanco"></button>
+                </div>
+                <div class="col-2"></div>
+            </div>
+        </form>
+    </section>
+</body>
+
+</html>

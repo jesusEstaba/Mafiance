@@ -1,3 +1,4 @@
+from email import message
 from types import NoneType
 from flask import Flask, render_template, redirect, session, request, abort
 from pymongo import MongoClient
@@ -201,11 +202,14 @@ def orders_creation(id):
     if not ad:
         return abort(404)
 
-    quantity = float(request.args.get('client_quantity'))
+    quantity = request.args.get('client_quantity')
     client_selected_method = request.args.get('method')
 
-    if quantity == "":
-        return redirect('/buy_selected_ad?mensaje=Ingresa una cantidad')
+    if not quantity:
+        return redirect('/buy_selected_ad/?mensaje=Ingresa una cantidad')
+
+    if client_selected_method == "":
+        return redirect('/buy_selected_ad/<id>?mensaje=Selecciona un método de pago')
 
     order_type = ad['type']
     order_currency = ad['currency']
@@ -215,6 +219,7 @@ def orders_creation(id):
     order_exchange_type = ad['exchange_type']
     order_fixed_price = ad['fixed_price']
     order_float_price = ad['float_price']
+    color = ad['color']
     userId = session.get('user_id')
 
     user_order = db.orders.find_one(
@@ -225,7 +230,7 @@ def orders_creation(id):
         new_order = {
             'status': "Pendiente",
             'type': order_type,
-            'client_quantity': quantity,
+            'client_quantity': float(quantity),
             'currency': order_currency,
             'fiat': order_fiat,
             'advertiser_amount': advertiser_amount,
@@ -236,11 +241,12 @@ def orders_creation(id):
             'client_payment_method': client_selected_method,
             'advertiser_name': user_name,
             'created_at': datetime.now(),
+            'color': color,
             'user_id': userId,
         }
     last_order_id = db.orders.insert_one(new_order).inserted_id
 
-    return redirect('/index' + str(last_order_id))
+    return redirect('/chat/' + str(last_order_id))
 
 
 @app.route("/sell_selected_ad/<id>")
@@ -256,13 +262,47 @@ def sell_selected(id):
     return render_template("sell_selected_ad.html", ad=ad, user=user, method=method, banks=banks, mensaje=mensaje)
 
 
+@app.route("/chat/<id>")
+def chat_view(id):
+    if not session.get('user_id'):
+        return redirect('/')
+
+    order = db.orders.find_one({'_id': ObjectId(id)})
+    message = list(db.messages.find({}))
+    userId = session.get('user_id')
+    return render_template("client_chat.html", order=order, message=message, userId=userId)
+
+
+@app.route("/message/create")
+def comment_create():
+    if not session.get('user_id'):
+        return redirect('/')
+
+    messageText = request.args.get('message')
+    orderId = request.args.get('order_id')
+    userId = session.get('user_id')
+    user_name = db.users.find_one({'_id': ObjectId(userId)})
+
+    message = {}
+    message['message'] = messageText
+    message['order_id'] = orderId
+    message['user_id'] = userId
+    message['user'] = user_name
+
+    db.messages.insert_one(message)
+
+    return redirect('/chat/' + str(orderId))
+
+
 @ app.route("/orders")
 def orders_view():
     if not session.get('user_id'):
         return redirect('/')
 
     userId = session.get('user_id')
-    orders = list(db.orders.find({'_id': userId}))
+    orders = list(db.orders.find({'user_id': userId}))
+    if not orders:
+        return abort(404)
     return render_template("orders.html", orders=orders)
 
 
@@ -587,6 +627,7 @@ def create_buy_ad():
         'terms': terms,
         'message': message,
         'status_online': status_online,
+        'color': "rgb(87, 255, 87)",
         'user_id': userId
     }
     db.advertisements.insert_one(newAd).inserted_id
@@ -665,6 +706,7 @@ def create_sell_ad():
         'terms': terms,
         'message': message,
         'status_online': status_online,
+        'color': "rgb(255, 0, 0)",
         'user_id': userId
     }
     db.advertisements.insert_one(newAd).inserted_id

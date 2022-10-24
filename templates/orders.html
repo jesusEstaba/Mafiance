@@ -30,14 +30,6 @@
             outline: 1px solid #d0d0d0;
         }
 
-        .rojo {
-            color: red;
-        }
-
-        .verde {
-            color: rgb(78, 203, 78);
-        }
-
         .amarillo {
             color: #ffc107;
         }
@@ -62,65 +54,39 @@
                 </div>
             </div>
             <!--Recordar:
-                1. Hacer que los nombres de "compra/venta" cambien y el tipo de moneda USDT/BTC. 
-                2. Traer datos de ordenes.
                 3. Hacer pop up de calendario.
                 4. Que el icono de la doble hoja copie
                 5. Registro de chat accediendo al icono. Con el nombre del comprador/vendedor
                 6. Estado de la orden-->
             <div class="row mt-3 magenta">
+                {% for o in orders %}
                 <div class="col-3"></div>
-                <div class="col-3 cuadrados py-3" style="border-radius: 20px;">
-                    <div class="col-6 rojo">
-                        <h3>Venta</h3>
+                <div class="col-3 cuadrados py-3 mb-3" style="border-radius: 20px;">
+                    <div class="col-6">
+                        <h3 style="color:{{o['color']}};">{{o['type']}}</h3>
                     </div>
                     <div class="col-6">
-                        <h3>USDT</h3>
+                        <h3>{{o['currency']}}</h3>
                     </div>
                     <hr>
-                    <p>Precio ARS$ 273.01</p>
-                    <P class="amarillo">Monto 91.57 USDT</P>
-                    <p>Orden ID 56789</p>
+                    <p>Precio ARS$ {{o['fixed_price']}}</p>
+                    <P class="amarillo">Monto {{o['client_quantity']}}</P>
+                    <p>Orden ID {{o['_id']}}</p>
                     <i class="fa-solid fa-copy fa-2x"></i>
                     <hr>
-                    <p class="pt-2 amarillo">User Name Freddy's Perdomo</p>
+                    <p>Anunciante mafioso:</p>
+                    <h6 class="h6t-2 amarillo">{{o['advertiser_name']}}</h6>
+
                     <i class="fa-solid fa-comments fa-2x"></i>
                 </div>
-                <div class="col-3 py-3">
-                    <p>Completado ></p>
-                    <p>09-14-2022</p>
-                    <p>10:35:30</p>
-                    <h3>ARS$ 25,000.00</h3>
+                <div class="col-3 py-3 mb-3 amarillo">
+                    <p>{{o['status']}} ></p>
+                    <p>{{o['created_at']}}</p>
+                    <h3>{{o['valor_al_cambio']}}</h3>
                     <hr>
                 </div>
                 <div class="col-3"></div>
-            </div>
-            <div class="row mt-3 magenta">
-                <div class="col-3"></div>
-                <div class="col-3 cuadrados py-3" style="border-radius: 20px;">
-                    <div class="col-6 verde">
-                        <h3>Compra</h3>
-                    </div>
-                    <div class="col-6">
-                        <h3>USDT</h3>
-                    </div>
-                    <hr>
-                    <p>Precio ARS$ 273.01</p>
-                    <P class="amarillo">Monto 91.57 USDT</P>
-                    <p>Orden ID 56789</p>
-                    <i class="fa-solid fa-copy fa-2x"></i>
-                    <hr>
-                    <p class="pt-2 amarillo">User Name Nelson Mandela</p>
-                    <i class="fa-solid fa-comments fa-2x"></i>
-                </div>
-                <div class="col-3 py-3">
-                    <p>Pendiente ></p>
-                    <p>09-14-2022</p>
-                    <p>10:35:30</p>
-                    <h3>ARS$ 25,000.00</h3>
-                    <hr>
-                </div>
-                <div class="col-3"></div>
+                {% endfor %}
             </div>
         </div>
     </section>
