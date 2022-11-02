@@ -34,7 +34,7 @@
             color: #ffc107;
         }
     </style>
-    <title>Órdenes | Mafiance</title>
+    <title>Órdenes de anuncios| Mafiance</title>
 </head>
 
 <body>
@@ -47,18 +47,13 @@
                     </a>
                 </div>
                 <div class="col-4 text-center">
-                    <h3>Todas las órdenes</h3>
+                    <h3>Todas las órdenes de anuncios</h3>
                 </div>
                 <div class="col-4 text-end">
                     <i class="fa-regular fa-calendar-days fa-3x"></i>
                 </div>
             </div>
-            <!--Recordar:
-                3. Hacer pop up de calendario.
-                4. Que el icono de la doble hoja copie
-                5. Registro de chat accediendo al icono. Con el nombre del comprador/vendedor
-                6. Estado de la orden-->
-            <div class="row mt-3 magenta">
+            <div class="mt-3 magenta">
                 {% if not orders %}
                 <div class="row py-5">
                     <div class="col-4"></div>
@@ -70,32 +65,39 @@
                 </div>
                 {% endif %}
                 {% for o in orders %}
-                <div class="col-3"></div>
-                <div class="col-3 cuadrados py-3 mb-3" style="border-radius: 20px;">
-                    <div class="col-6">
-                        <h3 style="color:{{o['color']}};">{{o['type']}}</h3>
-                    </div>
-                    <div class="col-6">
-                        <h3>{{o['currency']}}</h3>
-                    </div>
-                    <hr>
-                    <p>Precio ARS$ {{o['fixed_price']}}</p>
-                    <P class="amarillo">Monto {{o['client_quantity']}}</P>
-                    <p>Orden ID {{o['_id']}}</p>
-                    <i class="fa-solid fa-copy fa-2x"></i>
-                    <hr>
-                    <p>Anunciante mafioso:</p>
-                    <h6 class="h6t-2 amarillo">{{o['advertiser_name']}}</h6>
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-3 cuadrados py-3 mb-3" style="border-radius: 20px;">
+                        <div class="col-6">
+                            <h3 style="color:{{o['color']}};">{{o['type']}}</h3>
+                        </div>
+                        <div class="col-6">
+                            <h3>{{o['currency']}}</h3>
+                        </div>
+                        <hr>
+                        <p>Precio ARS$ {{o['fixed_price']}}</p>
+                        <P class="amarillo">Monto {{o['client_quantity']}}</P>
+                        <p>Orden ID {{o['_id']}}</p>
+                        <i class="fa-solid fa-copy fa-2x"></i>
+                        <hr>
+                        <p>Anunciante mafioso:</p>
+                        <h6 class="h6t-2 amarillo">{{o['advertiser_name']}}</h6>
 
-                    <i class="fa-solid fa-comments fa-2x"></i>
+                        <i class="fa-solid fa-comments fa-2x"></i>
+                    </div>
+                    <div class="col-3 py-3 mb-3 amarillo">
+                        <p>{{o['status']}} ></p>
+                        <p>{{o['created_at']}}</p>
+                        <h3>{{o['valor_al_cambio']}}</h3>
+                        <hr>
+                    </div>
+                    {% if o['status'] != 'Completado' %}
+                    <div class="col-3">
+                        <a href="/chat/{{o['_id']}}" type="button" class="btn btn-danger btn-lg">Nuevos
+                            mensajes</a>
+                    </div>
                 </div>
-                <div class="col-3 py-3 mb-3 amarillo">
-                    <p>{{o['status']}} ></p>
-                    <p>{{o['created_at']}}</p>
-                    <h3>{{o['valor_al_cambio']}}</h3>
-                    <hr>
-                </div>
-                <div class="col-3"></div>
+                {% endif %}
                 {% endfor %}
             </div>
         </div>

@@ -69,11 +69,38 @@
             </div>
             <div class="row cuadradosA py-3" style="border-radius: 20px;">
                 <div class="col-4">
+
+                    {% if order['status'] == 'Completado' %}
+                    <h3 style="color: rgb(87, 255, 87)">{{order['status']}}</h3>
+                    {% else %}
                     <h3 style="color: rgb(255, 0, 0)">{{order['status']}}</h3>
+                    {% endif %}
+
                     <h6>Monto: {{order['client_quantity']}}</h6>
                 </div>
-                <div class="col-4 text-center">
-                    <button type="submit" class="btn btn-warning btn-lg">Marcar Pagado</button>
+
+                <!--Si el user_id de la orden es igual al id del anunciante muestra el botón de liberar para el anunciante 
+                    sino muestra marcar pagado para el cliente.-->
+
+                <div class="col-4 text-center pt-2">
+
+                    {{order['advertiser_id']}} Anunciante
+                    {{userId}}
+                    {% if userId == order['advertiser_id'] %}
+                    {% if order['status'] == 'Liberando' %}
+                    <a href="/order/next/status/{{order['_id']}}" class="btn btn-warning btn-lg">Liberar criptos</a>
+                    {% endif %}
+                    {% endif %}
+
+                    {% if userId != order['advertiser_id'] %}
+                    {% if order['status'] == 'Pendiente' %}
+                    <a href="/order/next/status/{{order['_id']}}" class="btn btn-warning btn-lg">Marcar Pagado</a>
+                    {% endif %}
+                    {% endif %}
+
+                    {% if order['status'] == 'Completado' %}
+                    <a href="/order/next/status/{{order['_id']}}" class="btn btn-success btn-lg">Ver resumen</a>
+                    {% endif %}
                 </div>
                 <div class="col-4"></div>
             </div>
@@ -81,7 +108,17 @@
             <div class="row">
                 <div class="col cuadradosM py-3">
                     <input type="hidden" name="order_id" value="{{order['_id']}}" />
-                    <!--COMO HACER UN CHAT PAPA UN LINK MEGA-->
+                    <!--COMO HACER UN CHAT PAPA!!! UN LINK MEGA-->
+                    {% if not message %}
+                    <div class="row py-5">
+                        <div class="col-4"></div>
+                        <div class="col-4 text-center pt-3">
+                            <i class="fa-solid fa-paper-plane fa-5x amarillo"></i>
+                            <p class="pt-3 amarillo">Todavía nadie escribió ¡Sé el primero!</p>
+                        </div>
+                        <div class="col-4"></div>
+                    </div>
+                    {% endif %}
                     {% for m in message %}
                     <div class="row">
                         {% if userId != (m['user']['_id'] | string) %}

@@ -228,11 +228,14 @@
                 <div class="col-2 magenta">
                     <p>120 Órdenes | 81.10%</p>
                     <div class="pt-5"></div>
-                    <div class="pt-5">
-                        <a href="/buy_selected_ad/{{a['_id']}}" type="button"
-                            class="btn fmagenta blanco btn-lg">Comprar</a>
-                    </div>
+                    <a href="/buy_selected_ad/{{a['_id']}}" type="button" class="btn fmagenta blanco btn-lg">Comprar</a>
                 </div>
+                {% if userId == a['user_id'] %}
+                <div class="col-2">
+                    <a href="/advertisements/{{a['_id']}}/orders" type="button" class="btn btn-danger btn-lg">Ver
+                        órdenes</a>
+                </div>
+                {% endif %}
             </div>
             <hr class="magenta">
             {% endfor %}

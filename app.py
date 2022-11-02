@@ -104,8 +104,6 @@ def signin_user():
     session.pop('user_id', None)
     return redirect('/finished')
 
-    # Tarea! Hacer que al iniciar sesión identifique al nuevo usuario.
-
 
 @app.route("/finished")
 def registration_view():
@@ -147,6 +145,10 @@ def p2pBuyer_view():
 
     ads = list(db.advertisements.find({'type': 'Compra'}))
     banks = list(db.banks.find({}))
+
+    userId = session.get('user_id')
+    order = db.orders.find_one({'advertiser_id': userId})
+
 ####### Forma de agregar un dato nuevo a la lista de la coleccion ads. para type error de listas por indices etc. #######
 # Vease la vista P2PBuyer.html donde ajustamos el dato de nombre. Acá buscamos con el id en otra colección
     for ad in ads:
@@ -155,7 +157,7 @@ def p2pBuyer_view():
         ad['user'] = user
         ad['method'] = method
 
-    return render_template("p2pBuyer.html", ads=ads, banks=banks)
+    return render_template("p2pBuyer.html", ads=ads, banks=banks, order=order, userId=userId)
 
 
 @ app.route("/p2pSeller")
@@ -190,6 +192,25 @@ def buy_selected(id):
     return render_template("buy_selected_ad.html", ad=ad, user=user, method=method, mensaje=mensaje, banks=banks)
 
 
+@app.route("/orders")
+def orders_view():
+    if not session.get('user_id'):
+        return redirect('/')
+
+    userId = session.get('user_id')
+    orders = list(db.orders.find({'user_id': userId}))
+    return render_template("orders.html", orders=orders)
+
+
+@app.route("/advertisements/<id>/orders")
+def advertisements_order_view(id):
+    if not session.get('user_id'):
+        return redirect('/')
+
+    orders = list(db.orders.find({'advertisement_id': id}))
+    return render_template("advertisements_orders.html", orders=orders)
+
+
 @app.route("/create/order/<id>")
 def orders_creation(id):
 
@@ -220,10 +241,13 @@ def orders_creation(id):
     order_fixed_price = ad['fixed_price']
     order_float_price = ad['float_price']
     color = ad['color']
-    userId = session.get('user_id')
+    advertiser_id = ad['user_id']
+    advertisement_id = ad['_id']  # id del anunciante.
+    userId = session.get('user_id')  # id de sesion del usuario que compra.
 
+    # Acá verficamos si la orden ya existe redirecciona. ########
     user_order = db.orders.find_one(
-        {'user_id': userId, 'currency': order_currency, 'client_quantity': quantity})  # Acá verficamos si la orden ya existe redirecciona. ########
+        {'user_id': userId, 'currency': order_currency, 'client_quantity': quantity, 'client_payment_method': client_selected_method})
 
     # Si no tiene order, se crea. y si tiene order, va a ir a index y no creara otra.
     if not user_order:
@@ -240,11 +264,44 @@ def orders_creation(id):
             'valor_al_cambio': "por definir",
             'client_payment_method': client_selected_method,
             'advertiser_name': user_name,
+            'advertiser_id': advertiser_id,  # id del anunciante.
+            'advertisement_id': str(advertisement_id),
             'created_at': datetime.now(),
             'color': color,
-            'user_id': userId,
+            'user_id': userId,  # id de sesion del usuario que compra.
         }
     last_order_id = db.orders.insert_one(new_order).inserted_id
+
+    ################### Proceso de retención de cripto #######################
+    ##########################################################################
+    advertiser_wallet = db.wallets.find_one(
+        {'user_id': ad['user_id'], 'currency': ad['currency']})
+
+    # Creamos un nuevo dato en la colección. Preguntar cómo crear un nuevo campo en base de datos  ###############
+
+    advertiser_wallet['temp_balance'] = float(0)
+
+    if advertiser_wallet:
+
+        # Restamos el balance a 0 y sumamos la cantidad al nuevo campo dentro de la misma wallet.
+        db.wallets.update_one(
+            {'user_id': advertiser_wallet['user_id'],
+                'balance': advertiser_wallet['balance']},
+            {
+                '$set': {'balance': advertiser_wallet['balance'] - ad['amount']}
+            }
+        )
+
+        db.wallets.update_one(
+            {'user_id': advertiser_wallet['user_id'],
+                'temp_balance': advertiser_wallet['temp_balance']},
+            {
+                '$set': {'temp_balance': advertiser_wallet['temp_balance'] + ad['amount']}
+            }
+        )
+        print(advertiser_wallet)
+    else:
+        return abort(404)
 
     return redirect('/chat/' + str(last_order_id))
 
@@ -293,17 +350,76 @@ def comment_create():
 
     return redirect('/chat/' + str(orderId))
 
+############################ Cambiamos estado de la orden ########################################
 
-@ app.route("/orders")
-def orders_view():
+
+@app.route("/order/next/status/<id>")
+def order_next_status(id):
+
+    order = db.orders.find_one({'_id': ObjectId(id)})
+    # status= se refiere al valor de la clave 'status' que tenga el pedido en la actualidad.
+    status = order['status']
+
+    if order['status'] == 'Pendiente':
+        # se cumple la condicion y se reemplaza el valor del status. de 'paid' a 'delivered'
+        status = 'Liberando'
+    elif order['status'] == 'Liberando':
+        status = 'Completado'
+
+    db.orders.update_one(
+        {'_id': ObjectId(id)},
+        {'$set': {'status': status}}
+    )
+################ Pasamos el dinero de la wallet temporal a la del cliente  #######################
+    if order['status'] == 'Completado':
+
+        advertiser_wallet = db.wallets.find_one(  # Wallet anunciante
+            {'user_id': order['advertiser_id'], 'currency': order['currency']})
+
+        client_wallet = db.wallets.find_one(      # Wallet cliente.
+            {'user_id': order['user_id'], 'currency': order['currency']})
+
+        print(advertiser_wallet)
+        print(client_wallet)
+
+        if advertiser_wallet:
+
+            db.wallets.update_one(
+                {'user_id': order['advertiser_id'],
+                    'currency': order['currency']},
+                {
+                    '$set': {'temp_balance': advertiser_wallet['temp_balance'] - order['advertiser_amount']}
+                }
+            )
+
+            db.wallets.update_one(
+                {'user_id': order['user_id'], 'currency': order['currency']},
+                {
+                    '$set': {'balance': client_wallet['balance'] + order['advertiser_amount']}
+                }
+            )
+            # Eliminamos el anuncio si el estado de la orden es completado
+
+            ad = db.advertisements.find_one(
+                {'user_id': order['advertiser_id'], 'currency': order['currency'], 'amount': order['advertiser_amount']})
+            if ad is not None:
+                db.advertisements.delete_one(ad)
+
+        else:
+            return abort(404)
+
+        return redirect('/order_completed/' + str(id))
+ # Recargamos el client_chat.html cuando el usuario le da continuar y se actualiza el estado a liberando.
+    return redirect('/chat/' + str(id))
+
+
+@ app.route("/order_completed/<id>")
+def order_completed_view(id):
+
     if not session.get('user_id'):
         return redirect('/')
-
-    userId = session.get('user_id')
-    orders = list(db.orders.find({'user_id': userId}))
-    if not orders:
-        return abort(404)
-    return render_template("orders.html", orders=orders)
+    order = db.orders.find_one({'_id': ObjectId(id)})
+    return render_template("order_completed.html", order=order)
 
 
 @ app.route("/divisa")
@@ -395,6 +511,7 @@ def sendtoWallet():
     # Definimos las variables para buscar cada wallet y se hizo un filtro con currency para que especificar el tipo
     # de moneda que ambas wallet sean POR EJEMPLO USDT. y en el diccionario con str(senderWallet)
     # evitamos traer un object Id y nos traemos por si acaso un string.
+
     receiverWallet = db.wallets.find_one({'_id': ObjectId(wallet_id)})
     senderWallet = db.wallets.find_one(
         {'user_id': userId, 'currency': receiverWallet['currency']})
@@ -504,6 +621,7 @@ def addCripto(id):
         newWallet = {
             'currency': str(coin_acronym),
             'balance': 0.0,
+            'temp_balance': 0.0,
             'img': coin_img,
             'name': coin_name,
             'user_id': userId,
