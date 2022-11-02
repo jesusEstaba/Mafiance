@@ -56,8 +56,8 @@
             <!--Recordar:
                 3. Hacer pop up de calendario.
                 4. Que el icono de la doble hoja copie
-                5. Registro de chat accediendo al icono. Con el nombre del comprador/vendedor
-                6. Estado de la orden-->
+                5. Registro de chat accediendo al icono. Con el nombre del comprador/vendedor-->
+
             <div class="row mt-3 magenta">
                 {% if not orders %}
                 <div class="row py-5">
@@ -71,7 +71,7 @@
                 {% endif %}
                 {% for o in orders %}
                 <div class="col-3"></div>
-                <div class="col-3 cuadrados py-3 mb-3" style="border-radius: 20px;">
+                <div class="col-3 cuadradosA py-3 mb-3" style="border-radius: 20px;">
                     <div class="col-6">
                         <h3 style="color:{{o['color']}};">{{o['type']}}</h3>
                     </div>

@@ -169,13 +169,16 @@ def p2pSeller_view():
     ads = list(db.advertisements.find({'type': 'Venta'}))
     banks = list(db.banks.find({}))
 
+    userId = session.get('user_id')
+    order = db.orders.find_one({'advertiser_id': userId})
+
     for ad in ads:
         user = db.users.find_one({'_id': ObjectId(ad['user_id'])})
         method = db.banks.find_one({'_id': ObjectId(ad['payment_method'])})
         ad['user'] = user
         ad['method'] = method
 
-    return render_template("p2pSeller.html", ads=ads, banks=banks)
+    return render_template("p2pSeller.html", ads=ads, banks=banks, order=order, userId=userId)
 
 
 @app.route("/buy_selected_ad/<id>")
