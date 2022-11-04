@@ -1,3 +1,5 @@
+import cloudinary.api
+import cloudinary.uploader
 from email import message
 from types import NoneType
 from flask import Flask, render_template, redirect, session, request, abort
@@ -6,6 +8,15 @@ from bson.objectid import ObjectId
 from datetime import datetime
 import os
 import random
+import cloudinary
+
+cloudinary.config(
+    cloud_name="dpwaxzhnx",
+    api_key="686827445281429",
+    api_secret="BEP9W9XdP_emQJb8PL7fhqP8czc",
+    secure=True
+)
+
 
 app = Flask(__name__)
 app.secret_key = ".."
@@ -13,6 +24,8 @@ uri = os.environ.get('MONGO_DB_URI', "mongodb://127.0.0.1")
 print(uri)
 client = MongoClient(uri)
 db = client.mafiance
+
+CLOUDINARY_URL = "cloudinary://686827445281429:BEP9W9XdP_emQJb8PL7fhqP8czc@dpwaxzhnx"
 
 
 @app.route("/")
@@ -328,7 +341,7 @@ def chat_view(id):
         return redirect('/')
 
     order = db.orders.find_one({'_id': ObjectId(id)})
-    message = list(db.messages.find({}))
+    message = list(db.messages.find({'order_id': id}))
     userId = session.get('user_id')
     return render_template("client_chat.html", order=order, message=message, userId=userId)
 
@@ -714,8 +727,12 @@ def create_buy_ad():
     # Filtramos la wallet del usuario para hacer la condicion de si posee el balance que dice tener y con el tipo de moneda que eligió.
     user_wallet = db.wallets.find_one({'user_id': userId, 'currency': coin})
 
-    if float(quantity) > float(user_wallet['balance']):
-        return redirect('/publish_buyer?mensaje=La cantidad introducida excede el balance disponible')
+    if user_wallet == None:
+        return redirect('/publish_buyer?mensaje=No posees una billetera con el activo seleccionado, por favor elija uno válido')
+
+    if user_wallet:
+        if float(quantity) > float(user_wallet['balance']):
+            return redirect('/publish_buyer?mensaje=La cantidad introducida excede el balance disponible')
 
     final_limit = 1000000
 
@@ -789,25 +806,28 @@ def create_sell_ad():
     userId = session.get('user_id')
 
     if coin == "" or fiat == "" or type == "" or fixed_price == "" or quantity == "" or limit_min == "" or limit_max == "" or payment_method == "" or time == "" or status_online == "":
-        return redirect('/publish_buyer?mensaje=Tienes campos vacíos')
+        return redirect('/publish_seller?mensaje=Tienes campos vacíos')
 
     final_limit = 1000000
 
     if float(limit_max) >= float(final_limit):
-        return redirect('/publish_buyer?mensaje=El límite máximo no debe exceder 1000000.00')
+        return redirect('/publish_seller?mensaje=El límite máximo no debe exceder 1000000.00')
 
     final_limit_min = 0
 
     if float(limit_min) <= float(final_limit_min):
-        return redirect('/publish_buyer?mensaje=El límite mínimo no puede ser 0')
+        return redirect('/publish_seller?mensaje=El límite mínimo no puede ser 0')
 
     user_wallet = db.wallets.find_one({'user_id': userId, 'currency': coin})
 
+    if user_wallet == None:
+        return redirect('/publish_seller?mensaje=No posees una billetera con el activo seleccionado, por favor elija uno válido')
+
     if float(quantity) > float(user_wallet['balance']):
-        return redirect('/publish_buyer?mensaje=La cantidad introducida excede el balance disponible')
+        return redirect('/publish_seller?mensaje=La cantidad introducida excede el balance disponible de la cripto seleccionada')
 
     if len(terms) >= 200:
-        return redirect('/publish_buyer?mensaje=Los términos no deben superar los 200 caracteres')
+        return redirect('/publish_seller?mensaje=Los términos no deben superar los 200 caracteres')
 
     newAd = {
         'type': "Venta",

@@ -196,8 +196,9 @@
                         <p class="magenta">Precio</p>
                         <h2 class="amarillo">{{a['fixed_price']}} ${{a['fiat']}}</h2>
                         <div class="col magenta">
-                            <p>Cantidad cripto</p>
+                            <p>Cantidad cripto
                             <p class="blanco">{{a['amount']}} {{a['currency']}}</p>
+                            </p>
                         </div>
                         <div class="col magenta">
                             <p>Límite
@@ -223,16 +224,14 @@
                 <div class="col-2 magenta">
                     <p>120 Órdenes | 81.10%</p>
                     <div class="pt-5"></div>
-                    <div class="pt-5">
-                        <a href="/sell_selected_ad/{{a['_id']}}" type="button" class="btn btn-danger btn-lg">Vender</a>
-                    </div>
-                    {% if userId == a['user_id'] %}
-                    <div class="col-2">
-                        <a href="/advertisements/{{a['_id']}}/orders" type="button" class="btn btn-danger btn-lg">Ver
-                            órdenes</a>
-                    </div>
-                    {% endif %}
+                    <a href="/sell_selected_ad/{{a['_id']}}" type="button" class="btn btn-danger btn-lg">Vender</a>
                 </div>
+                {% if userId == a['user_id'] %}
+                <div class="col-2">
+                    <a href="/advertisements/{{a['_id']}}/orders" type="button" class="btn btn-danger btn-lg">Ver
+                        órdenes</a>
+                </div>
+                {% endif %}
             </div>
             <hr class="magenta">
             {% endfor %}
