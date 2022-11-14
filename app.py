@@ -1,11 +1,12 @@
-import cloudinary.api
 import cloudinary.uploader
+import cloudinary.api
 from email import message
 from types import NoneType
 from flask import Flask, render_template, redirect, session, request, abort
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
+import time
 import os
 import random
 import cloudinary
@@ -16,7 +17,6 @@ cloudinary.config(
     api_secret="BEP9W9XdP_emQJb8PL7fhqP8czc",
     secure=True
 )
-
 
 app = Flask(__name__)
 app.secret_key = ".."
@@ -101,7 +101,8 @@ def signin_user():
     newUser = {
         'email': newEmail,
         'password': newPassword,
-        'user': new_user_name
+        'user': new_user_name,
+        'completed_orders': 0
     }
     # Creamos documentos en la base de datos.
     newUserId = str(db.users.insert_one(newUser).inserted_id)
@@ -158,10 +159,10 @@ def p2pBuyer_view():
 
     ads = list(db.advertisements.find({'type': 'Compra'}))
     banks = list(db.banks.find({}))
+    mensaje = request.args.get('mensaje')
 
     userId = session.get('user_id')
     order = db.orders.find_one({'advertiser_id': userId})
-
 ####### Forma de agregar un dato nuevo a la lista de la coleccion ads. para type error de listas por indices etc. #######
 # Vease la vista P2PBuyer.html donde ajustamos el dato de nombre. Acá buscamos con el id en otra colección
     for ad in ads:
@@ -170,7 +171,7 @@ def p2pBuyer_view():
         ad['user'] = user
         ad['method'] = method
 
-    return render_template("p2pBuyer.html", ads=ads, banks=banks, order=order, userId=userId)
+    return render_template("p2pBuyer.html", ads=ads, banks=banks, order=order, userId=userId, mensaje=mensaje)
 
 
 @ app.route("/p2pSeller")
@@ -184,14 +185,16 @@ def p2pSeller_view():
 
     userId = session.get('user_id')
     order = db.orders.find_one({'advertiser_id': userId})
-
+    mensaje = request.args.get('mensaje')
     for ad in ads:
         user = db.users.find_one({'_id': ObjectId(ad['user_id'])})
         method = db.banks.find_one({'_id': ObjectId(ad['payment_method'])})
         ad['user'] = user
         ad['method'] = method
 
-    return render_template("p2pSeller.html", ads=ads, banks=banks, order=order, userId=userId)
+    return render_template("p2pSeller.html", ads=ads, banks=banks, order=order, userId=userId, mensaje=mensaje)
+
+################################### Creación de Órdenes al comprar anuncio #######################################
 
 
 @app.route("/buy_selected_ad/<id>")
@@ -204,6 +207,12 @@ def buy_selected(id):
     method = db.banks.find_one({'_id': ObjectId(ad['payment_method'])})
     banks = list(db.banks.find({}))
     mensaje = request.args.get('mensaje')
+
+    advertiser_wallet = db.wallets.find_one(
+        {'user_id': ad['user_id'], 'currency': ad['currency']})
+
+    if float(advertiser_wallet['balance']) < float(ad['amount']):
+        return redirect('/p2pBuyer?mensaje=El Anuncio está desactualizado, por favor elija otro')
 
     return render_template("buy_selected_ad.html", ad=ad, user=user, method=method, mensaje=mensaje, banks=banks)
 
@@ -243,10 +252,10 @@ def orders_creation(id):
     client_selected_method = request.args.get('method')
 
     if not quantity:
-        return redirect('/buy_selected_ad/?mensaje=Ingresa una cantidad')
+        return redirect('/buy_selected_ad/'+str(ad['_id'])+'?mensaje=Ingresa una cantidad')
 
-    if client_selected_method == "":
-        return redirect('/buy_selected_ad/<id>?mensaje=Selecciona un método de pago')
+    if not client_selected_method:
+        return redirect('/buy_selected_ad/'+str(ad['_id'])+'?mensaje=Selecciona un método de pago')
 
     order_type = ad['type']
     order_currency = ad['currency']
@@ -332,7 +341,16 @@ def sell_selected(id):
     method = db.banks.find_one({'_id': ObjectId(ad['payment_method'])})
     banks = list(db.banks.find({}))
     mensaje = request.args.get('mensaje')
+
+    advertiser_wallet = db.wallets.find_one(
+        {'user_id': ad['user_id'], 'currency': ad['currency']})
+
+    if float(advertiser_wallet['balance']) < float(ad['amount']):
+        return redirect('/p2pSeller?mensaje=El Anuncio está desactualizado, por favor elija otro')
+
     return render_template("sell_selected_ad.html", ad=ad, user=user, method=method, banks=banks, mensaje=mensaje)
+
+############################################## CHAT Y CREACIÓN DE MENSAJES #############################################
 
 
 @app.route("/chat/<id>")
@@ -343,7 +361,16 @@ def chat_view(id):
     order = db.orders.find_one({'_id': ObjectId(id)})
     message = list(db.messages.find({'order_id': id}))
     userId = session.get('user_id')
-    return render_template("client_chat.html", order=order, message=message, userId=userId)
+    mensaje = request.args.get('mensaje')
+
+ #   for hora in range(24):
+ #       for minuto in range(60):
+ #           for segundo in range(60):
+ #               os.system('cls')
+ #               print(f'{hora}:{minuto}:{segundo}')
+ #               time.sleep(1)
+
+    return render_template("client_chat.html", order=order, message=message, userId=userId, mensaje=mensaje)
 
 
 @app.route("/message/create")
@@ -356,15 +383,28 @@ def comment_create():
     userId = session.get('user_id')
     user_name = db.users.find_one({'_id': ObjectId(userId)})
 
-    message = {}
-    message['message'] = messageText
-    message['order_id'] = orderId
-    message['user_id'] = userId
-    message['user'] = user_name
+    ad = request.args.get('ad_id')
+
+    ad_id = db.advertisements.find_one({'_id': ObjectId(ad)})
+
+# En esta condición decimos "si el mensaje de texto no esta vacío o el mensaje
+# reservado del anunciante existe crea el mensaje".
+
+    if messageText != "" or ad_id['message']:
+
+        message = {}
+        message['message'] = messageText
+        message['reserved_message'] = ad_id['message']
+        message['order_id'] = orderId
+        message['user_id'] = userId
+        message['user'] = user_name
+
+    else:
+        return redirect('/chat/'+str(orderId)+'?mensaje=Introduce un mensaje válido')
 
     db.messages.insert_one(message)
-
     return redirect('/chat/' + str(orderId))
+
 
 ############################ Cambiamos estado de la orden ########################################
 
@@ -387,16 +427,13 @@ def order_next_status(id):
         {'$set': {'status': status}}
     )
 ################ Pasamos el dinero de la wallet temporal a la del cliente  #######################
-    if order['status'] == 'Completado':
+    if order['status'] == 'Completado' or order['status'] == 'Cancelada':
 
         advertiser_wallet = db.wallets.find_one(  # Wallet anunciante
             {'user_id': order['advertiser_id'], 'currency': order['currency']})
 
         client_wallet = db.wallets.find_one(      # Wallet cliente.
             {'user_id': order['user_id'], 'currency': order['currency']})
-
-        print(advertiser_wallet)
-        print(client_wallet)
 
         if advertiser_wallet:
 
@@ -414,19 +451,51 @@ def order_next_status(id):
                     '$set': {'balance': client_wallet['balance'] + order['advertiser_amount']}
                 }
             )
+
+            # Si la orden está como Cancelada, al terminar la transacción pasará a estar Completado
+            if order['status'] == 'Cancelada':
+                status = 'Completado'
+
             # Eliminamos el anuncio si el estado de la orden es completado
 
             ad = db.advertisements.find_one(
-                {'user_id': order['advertiser_id'], 'currency': order['currency'], 'amount': order['advertiser_amount']})
-            if ad is not None:
-                db.advertisements.delete_one(ad)
+                {'_id': ObjectId(order['advertisement_id'])})
 
-        else:
-            return abort(404)
+            db.advertisements.delete_one(ad)
 
+    # Hacemos el conteo de ordenes completadas para el usuario dentro de la colección users
+
+    user_id = db.users.find_one({'_id': ObjectId(order['user_id'])})
+
+    print(user_id)
+    if user_id:
+        db.users.update_one(
+            {'_id': order['user_id']},
+            {'$set':
+                {'completed_orders':  user_id['completed_orders'] + 1}
+             }
+        )
         return redirect('/order_completed/' + str(id))
  # Recargamos el client_chat.html cuando el usuario le da continuar y se actualiza el estado a liberando.
     return redirect('/chat/' + str(id))
+
+
+@app.route("/order/apelation/<id>")
+def order_apelation(id):
+
+    order = db.orders.find_one({'_id': ObjectId(id)})
+
+    status = order['status']
+
+    if order['status'] == 'Liberando':
+        status = 'Cancelada'
+
+    db.orders.update_one(
+        {'_id': ObjectId(id)},
+        {'$set': {'status': status}}
+    )
+
+    return redirect('/orders')
 
 
 @ app.route("/order_completed/<id>")
@@ -658,7 +727,7 @@ def newCripto(id):
 
     return render_template("new_cripto_completed.html", new_wallet_cripto=new_wallet_cripto)
 
-######################### Acá creamos los anuncios ########################
+###################################### CREACIÓN DE ANUNCIOS ############################################
 
 
 @ app.route("/anuncios")
@@ -730,9 +799,15 @@ def create_buy_ad():
     if user_wallet == None:
         return redirect('/publish_buyer?mensaje=No posees una billetera con el activo seleccionado, por favor elija uno válido')
 
+    if payment_method == None:
+        return redirect('/publish_buyer?mensaje=Selecciona un banco')
+
+    if status_online == None:
+        return redirect('/publish_buyer?mensaje=Elije si tu anuncio será publicado en linea ahora mismo ó manualmente luego')
+
     if user_wallet:
         if float(quantity) > float(user_wallet['balance']):
-            return redirect('/publish_buyer?mensaje=La cantidad introducida excede el balance disponible')
+            return redirect('/publish_buyer?mensaje=Saldo insuficiente')
 
     final_limit = 1000000
 
@@ -823,8 +898,14 @@ def create_sell_ad():
     if user_wallet == None:
         return redirect('/publish_seller?mensaje=No posees una billetera con el activo seleccionado, por favor elija uno válido')
 
+    if payment_method == None:
+        return redirect('/publish_seller?mensaje=Selecciona un banco')
+
+    if status_online == None:
+        return redirect('/publish_seller?mensaje=Elije si tu anuncio será publicado en linea ahora mismo ó manualmente luego')
+
     if float(quantity) > float(user_wallet['balance']):
-        return redirect('/publish_seller?mensaje=La cantidad introducida excede el balance disponible de la cripto seleccionada')
+        return redirect('/publish_seller?mensaje=Saldo insuficiente')
 
     if len(terms) >= 200:
         return redirect('/publish_seller?mensaje=Los términos no deben superar los 200 caracteres')
