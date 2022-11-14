@@ -422,6 +422,10 @@ def order_next_status(id):
     elif order['status'] == 'Liberando':
         status = 'Completado'
 
+    else:
+        order['status'] == 'Cancelada'
+        status = 'Completado'
+
     db.orders.update_one(
         {'_id': ObjectId(id)},
         {'$set': {'status': status}}
@@ -453,29 +457,29 @@ def order_next_status(id):
             )
 
             # Si la orden está como Cancelada, al terminar la transacción pasará a estar Completado
-            if order['status'] == 'Cancelada':
-                status = 'Completado'
-
             # Eliminamos el anuncio si el estado de la orden es completado
 
-            ad = db.advertisements.find_one(
-                {'_id': ObjectId(order['advertisement_id'])})
+            if order['status'] == 'Cancelada':
+                status = 'Completado'
+            else:
+                ad = db.advertisements.find_one(
+                    {'_id': ObjectId(order['advertisement_id'])})
 
-            db.advertisements.delete_one(ad)
+                db.advertisements.delete_one(ad)
 
-    # Hacemos el conteo de ordenes completadas para el usuario dentro de la colección users
+                # Hacemos el conteo de ordenes completadas para el usuario dentro de la colección users
 
-    user_id = db.users.find_one({'_id': ObjectId(order['user_id'])})
+                # user_id = db.users.find_one({'_id': ObjectId(order['user_id'])})
 
-    print(user_id)
-    if user_id:
-        db.users.update_one(
-            {'_id': order['user_id']},
-            {'$set':
-                {'completed_orders':  user_id['completed_orders'] + 1}
-             }
-        )
-        return redirect('/order_completed/' + str(id))
+                # print(user_id)
+                # if user_id:
+                # db.users.update_one(
+                #  {'_id': order['user_id']},
+                # {'$set':
+                #     {'completed_orders':  user_id['completed_orders'] + 1}
+                #  }
+                # )
+                return redirect('/order_completed/' + str(id))
  # Recargamos el client_chat.html cuando el usuario le da continuar y se actualiza el estado a liberando.
     return redirect('/chat/' + str(id))
 
@@ -495,7 +499,7 @@ def order_apelation(id):
         {'$set': {'status': status}}
     )
 
-    return redirect('/orders')
+    return redirect('/chat/' + str(id))
 
 
 @ app.route("/order_completed/<id>")
