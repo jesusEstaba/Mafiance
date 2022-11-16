@@ -10,7 +10,7 @@
     <link rel="icon" href="https://i.imgur.com/iYKmUvA.png">
     <script src="https://kit.fontawesome.com/68d8235f51.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="temporizador_style.css">
+    <link rel="stylesheet" href="/temporizador_style.css">
 
     <style type="text/css">
         .blanco {
@@ -133,22 +133,15 @@
                 </div>
                 <!--------------------Temporizador------------------------>
                 <div class="col-4">
+                    <h6>{{minuto}}:{{segundo}}</h6>
 
                     <div class="cont-temporizador">
                         <div class="bloque">
-                            <div class="dias" id="dias">00</div>
-                            <p>DÍAS</p>
-                        </div>
-                        <div class="bloque">
-                            <div class="horas" id="horas">--</div>
-                            <p>HORAS</p>
-                        </div>
-                        <div class="bloque">
-                            <div class="minutos" id="minutos">--</div>
+                            <div class="minutos" id="minutos">00</div>
                             <p>MINUTOS</p>
                         </div>
                         <div class="bloque">
-                            <div class="segundos" id="segundos">--</div>
+                            <div class="segundos" id="segundos">00</div>
                             <p>SEGUNDOS</p>
                         </div>
                     </div>
@@ -269,7 +262,7 @@
     <!--<script src="app_image.js"></script>-->
 
     <!--Javascript del temporizador-->
-    <!--<script src="app_temporizador.js"></script>-->
+    <script src="app_temporizador.js"></script>
 
 </body>
 

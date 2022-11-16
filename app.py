@@ -10,6 +10,7 @@ import time
 import os
 import random
 import cloudinary
+import jyserver.Flask as jsf
 
 cloudinary.config(
     cloud_name="dpwaxzhnx",
@@ -18,7 +19,7 @@ cloudinary.config(
     secure=True
 )
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='public',)
 app.secret_key = ".."
 uri = os.environ.get('MONGO_DB_URI', "mongodb://127.0.0.1")
 print(uri)
@@ -193,6 +194,19 @@ def p2pSeller_view():
         ad['method'] = method
 
     return render_template("p2pSeller.html", ads=ads, banks=banks, order=order, userId=userId, mensaje=mensaje)
+################################### Borramos un anuncio #######################################
+
+
+@app.route("/remove_buyer_selected_ad/<id>")
+def remove_buyer_ad(id):
+    db.advertisements.delete_one({'_id': ObjectId(id)})
+    return redirect('/p2pBuyer')
+
+
+@app.route("/remove_seller_selected_ad/<id>")
+def remove_seller_ad(id):
+    db.advertisements.delete_one({'_id': ObjectId(id)})
+    return redirect('/p2pSeller')
 
 ################################### Creación de Órdenes al comprar anuncio #######################################
 
@@ -363,14 +377,17 @@ def chat_view(id):
     userId = session.get('user_id')
     mensaje = request.args.get('mensaje')
 
- #   for hora in range(24):
- #       for minuto in range(60):
- #           for segundo in range(60):
- #               os.system('cls')
- #               print(f'{hora}:{minuto}:{segundo}')
- #               time.sleep(1)
+   # minuto = 3
+   # segundo = 60
+   # while segundo*3 >= 1:
+    #  segundo -= 1
+    #  if segundo == 0:
+    #     minuto -= 1
+    # print(f'{minuto}:{segundo}')
+    # os.system('cls')
+    # time.sleep(1)
 
-    return render_template("client_chat.html", order=order, message=message, userId=userId, mensaje=mensaje)
+    return render_template("client_chat.html", order=order, message=message, userId=userId)
 
 
 @app.route("/message/create")
@@ -467,20 +484,20 @@ def order_next_status(id):
 
                 db.advertisements.delete_one(ad)
 
-                # Hacemos el conteo de ordenes completadas para el usuario dentro de la colección users
+            # Hacemos el conteo de ordenes completadas para el usuario dentro de la colección users
 
-                # user_id = db.users.find_one({'_id': ObjectId(order['user_id'])})
+                if order['status'] == 'Completado':
+                    user_id = db.users.find_one(
+                        {'_id': ObjectId(order['user_id'])})
 
-                # print(user_id)
-                # if user_id:
-                # db.users.update_one(
-                #  {'_id': order['user_id']},
-                # {'$set':
-                #     {'completed_orders':  user_id['completed_orders'] + 1}
-                #  }
-                # )
+                    db.users.update_one(
+                        {'_id': user_id['_id']},
+                        {'$set':
+                         {'completed_orders':  user_id['completed_orders'] + 1}
+                         }
+                    )
                 return redirect('/order_completed/' + str(id))
- # Recargamos el client_chat.html cuando el usuario le da continuar y se actualiza el estado a liberando.
+    # Recargamos el client_chat.html cuando el usuario le da continuar y se actualiza el estado a liberando.
     return redirect('/chat/' + str(id))
 
 

@@ -238,6 +238,11 @@
                     {% if userId != a['user_id'] %}
                     <a href="/sell_selected_ad/{{a['_id']}}" type="button" class="btn btn-danger btn-lg">Vender</a>
                     {% endif %}
+                    {% if userId == a['user_id'] %}
+                    <a href="/remove_seller_selected_ad/{{a['_id']}}">
+                        <i class="fa-solid fa-xmark fa-3x amarillo"></i>
+                    </a>
+                    {% endif %}
                 </div>
                 {% if userId == a['user_id'] %}
                 <div class="col-2">

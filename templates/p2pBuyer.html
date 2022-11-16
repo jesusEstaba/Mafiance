@@ -243,6 +243,11 @@
                     {% if userId != a['user_id'] %}
                     <a href="/buy_selected_ad/{{a['_id']}}" type="button" class="btn fmagenta blanco btn-lg">Comprar</a>
                     {% endif %}
+                    {% if userId == a['user_id'] %}
+                    <a href="/remove_buyer_selected_ad/{{a['_id']}}">
+                        <i class="fa-solid fa-xmark fa-3x amarillo"></i>
+                    </a>
+                    {% endif %}
                 </div>
 
                 {% if userId == a['user_id'] %}

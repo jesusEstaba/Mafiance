@@ -45,10 +45,11 @@
     <section class="negro blanco pb-5">
         <div class="container">
             <div class="row py-3">
-                <div class="col-12 pb-3">
+                <div class="col-12 pb-3 d-flex">
                     <a href="/orders">
                         <i class="fa-solid fa-xmark fa-3x amarillo"></i>
                     </a>
+                    <h3 class="px-3 pt-1 magenta">Ver órdenes</h3>
                 </div>
                 <div class="col-12 cuadradosA py-3 text-center" style="border-radius: 20px;">
                     <h1>Orden finalizada</h1>
@@ -56,6 +57,7 @@
                     <h3 style="color: rgb(87, 255, 87)">{{order['status']}}</h3>
                     <h3>Se han liberado:</h3>
                     <h3 class="magenta">{{order['advertiser_amount']}} {{order['currency']}}</h3>
+                    <a href="/p2pBuyer" type="button" class="btn btn-warning btn-lg">Listo</a>
                 </div>
             </div>
         </div>
