@@ -1,5 +1,3 @@
-import cloudinary.uploader
-import cloudinary.api
 from email import message
 from types import NoneType
 from flask import Flask, render_template, redirect, session, request, abort
@@ -11,6 +9,9 @@ import os
 import random
 import cloudinary
 import jyserver.Flask as jsf
+from twilio.rest import Client
+import keys_twilio
+
 
 cloudinary.config(
     cloud_name="dpwaxzhnx",
@@ -396,6 +397,7 @@ def comment_create():
         return redirect('/')
 
     messageText = request.args.get('message')
+    imageUrl = request.args.get('image')
     orderId = request.args.get('order_id')
     userId = session.get('user_id')
     user_name = db.users.find_one({'_id': ObjectId(userId)})
@@ -411,6 +413,7 @@ def comment_create():
 
         message = {}
         message['message'] = messageText
+        message['image_url'] = imageUrl
         message['reserved_message'] = ad_id['message']
         message['order_id'] = orderId
         message['user_id'] = userId
@@ -434,7 +437,7 @@ def order_next_status(id):
     status = order['status']
 
     if order['status'] == 'Pendiente':
-        # se cumple la condicion y se reemplaza el valor del status. de 'paid' a 'delivered'
+        # se cumple la condicion y se reemplaza el valor del status. de 'Pendiente' a 'liberando' y luego a 'Completado'
         status = 'Liberando'
     elif order['status'] == 'Liberando':
         status = 'Completado'
@@ -447,7 +450,19 @@ def order_next_status(id):
         {'_id': ObjectId(id)},
         {'$set': {'status': status}}
     )
-################ Pasamos el dinero de la wallet temporal a la del cliente  #######################
+    ##################### Api Rest Twilio (Mensajes de verificación al teléfono) ##########################
+    if order['status'] == 'Liberando':
+
+        client = Client(keys_twilio.account_sid, keys_twilio.auth_token)
+
+        message = client.messages.create(
+            body="Este es el código de verificación",
+            from_=keys_twilio.twilio_number,
+            to=keys_twilio.target_number
+        )
+        print(message.body)
+    #######################################################################################################
+        ################ Pasamos el dinero de la wallet temporal a la del cliente  #######################
     if order['status'] == 'Completado' or order['status'] == 'Cancelada':
 
         advertiser_wallet = db.wallets.find_one(  # Wallet anunciante

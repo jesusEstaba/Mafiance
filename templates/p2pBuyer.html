@@ -70,13 +70,13 @@
                 <div class="col-4 text-center">
                     <div class="dropdown-center">
                         <button class="btn btn-warning dropdown-toggle btn-lg" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                            aria-expanded="false" id="simple_dropdown">
                             P2P
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">P2P</a></li>
-                            <li><a class="dropdown-item" href="#">Comercio por bloques</a></li>
-                            <li><a class="dropdown-item" href="#">Rápido</a></li>
+                            <li><a href="#" class="dropdown-item">P2P</a></li>
+                            <li><a href="#" class="dropdown-item">Comercio por bloques</a></li>
+                            <li><a href="#" class="dropdown-item">Rápido</a></li>
                         </ul>
                     </div>
                 </div>
@@ -161,7 +161,7 @@
                         </button>
                         <ul class="dropdown-menu">
                             <input class="form-control me-2 text-center" type="search"
-                                placeholder="Ingresa la cantidad total" name="quantity" aria-label="#">
+                                placeholder="Ingresa la cantidad total" name="filter_quantity" aria-label="#">
                         </ul>
                     </div>
                 </div>
@@ -172,19 +172,16 @@
                             Método de pago
                         </button>
                         <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item active" href="#">Mercado Pago</a></li>
+                            {% for bank in banks %}
+                            <li><input type="hidden" class="dropdown-item" id="method_{{bank['_id']}}" name="method"
+                                    value="{{bank['_id']}}">
+                                <label class="btn btn-outline-light"
+                                    for="method_{{bank['_id']}}">{{bank['name']}}</label>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">Transferencia bancaria</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Lemon Cash</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Brubank</a></li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -237,7 +234,7 @@
                     <i class="fa-solid fa-circle-check fa-3x"></i>
                 </div>
                 <div class="col-2 magenta">
-                    <p>120 Órdenes | 81.10%</p>
+                    <p>{{a['user']['completed_orders']}} Órdenes | 81.10%</p>
                     <div class="pt-5"></div>
                     <!--Decidimos mostrar el botón al usuario deseado. Si al anunciante o al cliente-->
                     {% if userId != a['user_id'] %}
@@ -301,6 +298,10 @@
             </div>
         </div>
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
 </body>
 
 </html>

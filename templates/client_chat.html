@@ -196,7 +196,9 @@
                             </div>
                             <!--Si existe la imagen muestra el cuadro de css si no existe ocultalo-->
 
-                            <img class="img_client" id="img-preview">
+                            {% if m['image_url'] %}
+                            <img class="img_client img-fluid" src="{{m['image_url']}}" />
+                            {% endif %}
 
                         </div>
                         {% else %}
@@ -216,7 +218,9 @@
                                 {% endif %}
                             </div>
 
-                            <img class="img_client" id="img-preview">
+                            {% if m['image_url'] %}
+                            <img class="img_client img-fluid" src="{{m['image_url']}}" />
+                            {% endif %}
 
                         </div>
                         {% endif %}
@@ -226,18 +230,16 @@
                 <!--######################################################-->
             </div>
             <div class="row py-3">
-                <div class="col-1"></div>
-                <div class="col-3">
-                    <!-- <i class="fa-solid fa-circle-plus fa-2x"></i> -->
-                    <input type="file" id="img-uploader">
-
-                    <!--Barra de progreso se hace con <progress> value 0 indica el inicio y el 100 el maximo de carga
-                        Con el id=img-upload-bar conectamos la funcionabilidad del javascript-->
-
-                    <progress id="img-upload-bar" value="0" max="100" style="width: 100%"></progress>
+                <div class="col-4">
+                    <a id="upload_widget" href="#" class="btn btn-warning">
+                        Cargar imagen
+                    </a>
                 </div>
                 <div class="col-4 pt-1">
-                    <input class="form-control me-2" type="search" name="message" placeholder="Escribe tu mensaje">
+                    <input class="form-control me-2" type="search" name="message" id="message"
+                        placeholder="Escribe tu mensaje">
+
+                    <input type="hidden" name="image" id="image" />
                 </div>
                 {% if userId == order['advertiser_id'] %}
                 <div class="col-1">
@@ -253,16 +255,13 @@
     </section>
 
     <!--Cargamos widget de cloudinary-->
-    <!--<script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>-->
-
-    <!--Cargamos Axios-->
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>-->
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
 
     <!--Cargamos el archivo javascript para asociar al html-->
-    <!--<script src="app_image.js"></script>-->
+    <script src="/app_image.js"></script>
 
     <!--Javascript del temporizador-->
-    <script src="app_temporizador.js"></script>
+    <script src="/app_temporizador.js"></script>
 
 </body>
 

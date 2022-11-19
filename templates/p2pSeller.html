@@ -168,19 +168,16 @@
                             Método de pago
                         </button>
                         <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item active" href="#">Mercado Pago</a></li>
+                            {% for bank in banks %}
+                            <li><input type="hidden" class="dropdown-item" id="method_{{bank['_id']}}" name="method"
+                                    value="{{bank['_id']}}">
+                                <label class="btn btn-outline-light"
+                                    for="method_{{bank['_id']}}">{{bank['name']}}</label>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">Transferencia bancaria</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Lemon Cash</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Brubank</a></li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -233,7 +230,7 @@
                     <i class="fa-solid fa-circle-check fa-3x"></i>
                 </div>
                 <div class="col-2 magenta">
-                    <p>120 Órdenes | 81.10%</p>
+                    <p>{{a['user']['completed_orders']}} Órdenes | 81.10%</p>
                     <div class="pt-5"></div>
                     {% if userId != a['user_id'] %}
                     <a href="/sell_selected_ad/{{a['_id']}}" type="button" class="btn btn-danger btn-lg">Vender</a>
