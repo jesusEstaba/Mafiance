@@ -3,14 +3,13 @@ from types import NoneType
 from flask import Flask, render_template, redirect, session, request, abort
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from datetime import datetime
-import time
+from datetime import datetime, time
 import os
 import random
 import cloudinary
 import jyserver.Flask as jsf
 from twilio.rest import Client
-import keys_twilio
+import keys
 
 
 cloudinary.config(
@@ -26,8 +25,10 @@ uri = os.environ.get('MONGO_DB_URI', "mongodb://127.0.0.1")
 print(uri)
 client = MongoClient(uri)
 db = client.mafiance
-
 CLOUDINARY_URL = "cloudinary://686827445281429:BEP9W9XdP_emQJb8PL7fhqP8czc@dpwaxzhnx"
+account_sid = 'AC7c85cd42c3cff44b7edaa85b60352e89'
+auth_token = '330c6ac6b2defae84dbbeb5119112ccf'
+clientTwilio = Client(account_sid, auth_token)
 
 
 @app.route("/")
@@ -378,17 +379,7 @@ def chat_view(id):
     userId = session.get('user_id')
     mensaje = request.args.get('mensaje')
 
-   # minuto = 3
-   # segundo = 60
-   # while segundo*3 >= 1:
-    #  segundo -= 1
-    #  if segundo == 0:
-    #     minuto -= 1
-    # print(f'{minuto}:{segundo}')
-    # os.system('cls')
-    # time.sleep(1)
-
-    return render_template("client_chat.html", order=order, message=message, userId=userId)
+    return render_template("client_chat.html", order=order, message=message, userId=userId, mensaje=mensaje)
 
 
 @app.route("/message/create")
@@ -440,30 +431,30 @@ def order_next_status(id):
         # se cumple la condicion y se reemplaza el valor del status. de 'Pendiente' a 'liberando' y luego a 'Completado'
         status = 'Liberando'
     elif order['status'] == 'Liberando':
+        ##################### Api Rest Twilio (Mensajes de verificación al teléfono) ##########################
+      #  a = random.randint(0, 9)
+      #  b = random.randint(0, 9)
+      #  c = random.randint(0, 9)
+      #  d = random.randint(0, 9)
+        textMessage = clientTwilio.messages.create(
+            body="nuevo mensaje",
+            from_=keys.twilio_number,
+            to=keys.target_number
+        )
+        print(textMessage.body)
+    #######################################################################################################
         status = 'Completado'
 
     else:
-        order['status'] == 'Cancelada'
+        order['status'] == 'Apelando'
         status = 'Completado'
 
     db.orders.update_one(
         {'_id': ObjectId(id)},
         {'$set': {'status': status}}
     )
-    ##################### Api Rest Twilio (Mensajes de verificación al teléfono) ##########################
-    if order['status'] == 'Liberando':
-
-        client = Client(keys_twilio.account_sid, keys_twilio.auth_token)
-
-        message = client.messages.create(
-            body="Este es el código de verificación",
-            from_=keys_twilio.twilio_number,
-            to=keys_twilio.target_number
-        )
-        print(message.body)
-    #######################################################################################################
-        ################ Pasamos el dinero de la wallet temporal a la del cliente  #######################
-    if order['status'] == 'Completado' or order['status'] == 'Cancelada':
+    ################ Pasamos el dinero de la wallet temporal a la del cliente  #######################
+    if order['status'] == 'Completado' or order['status'] == 'Apelando':
 
         advertiser_wallet = db.wallets.find_one(  # Wallet anunciante
             {'user_id': order['advertiser_id'], 'currency': order['currency']})
@@ -491,7 +482,7 @@ def order_next_status(id):
             # Si la orden está como Cancelada, al terminar la transacción pasará a estar Completado
             # Eliminamos el anuncio si el estado de la orden es completado
 
-            if order['status'] == 'Cancelada':
+            if order['status'] == 'Apelando':
                 status = 'Completado'
             else:
                 ad = db.advertisements.find_one(
@@ -524,7 +515,22 @@ def order_apelation(id):
     status = order['status']
 
     if order['status'] == 'Liberando':
-        status = 'Cancelada'
+        status = 'Apelando'
+############ Diferencia de segundos entre dos fechas ##################
+    fechaActual = datetime.now()
+    fechaMaxima = order['created_at']
+
+    def diferencia_segundos_fechas(fechaActual, fechaMaxima):
+        diferencia = fechaMaxima - fechaActual
+        resultado = diferencia.days * 24 * 3600 + diferencia.seconds
+        return(resultado)
+    print('fecha actual:', fechaActual)
+    print(diferencia_segundos_fechas(fechaMaxima, fechaActual))
+
+    if diferencia_segundos_fechas(fechaMaxima, fechaActual) < 180:
+        return redirect('/chat/' + str(id) + '?mensaje=Falta tiempo, aun no puedes apelar')
+
+    # INVESTIGAR PARA TEMPORIZADORES EN BACKEND DE VERDAD: cron job o cron tab
 
     db.orders.update_one(
         {'_id': ObjectId(id)},
